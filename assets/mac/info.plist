@@ -5,6 +5,8 @@
   <key>CFBundleURLTypes</key>
   <array>
     <dict>
+      <key>NSRequiresAquaSystemAppearance</key>
+      <false />
       <key>CFBundleURLSchemes</key>
       <array>
         <string>electron-api-demos</string>

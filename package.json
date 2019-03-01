@@ -7,8 +7,9 @@
 		"start:dev": "cross-env NODE_ENV=development electron .",
 		"start:pro": "cross-env NODE_ENV=production electron .",
 		"package:win": "electron-packager ./dist --overwrite --platform=win32 --arch=x64 --out=./build --icon=assets/app-icon/win/app.ico",
-		"build:win": "gulp clear && tsc && npm run package:win && gulp copyNodeModules && gulp writePkg",
-		"package:mac": "electron-packager ./dist --overwrite --platform=darwin --arch=x64 --out=out --icon=assets/app-icon/mac/app.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist",
+		"package:mac": "electron-packager ./dist --overwrite --platform=darwin --arch=x64 --out=./build --icon=assets/app-icon/mac/app.icns --osx-sign.identity='Developer ID Application: GitHub' --extend-info=assets/mac/info.plist --darwinDarkModeSupport=true",
+		"build:win": "gulp clear && tsc && gulp writePkg && npm run package:win && gulp copyNodeModules",
+		"build:mac": "bash ./build.mac.sh",
 		"watch": "concurrently \"tsc -w\""
 	},
 	"author": "",

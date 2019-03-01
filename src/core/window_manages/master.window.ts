@@ -48,6 +48,8 @@ export class MasterWindow {
         this.win.on('close', (e) => {
             if (process.platform !== 'darwin') {
                 this.destroy();
+            }else{
+                this.getWin();
             }
         });
 
@@ -55,12 +57,15 @@ export class MasterWindow {
 
     }
 
-    public getWin(): BrowserWindow | null {
-        return this.win;
+    public getWin() {
+        if(global.browserWindowList['search']) {
+            delete global.browserWindowList['search'];
+        }
     }
 
     public destroy() {
         delete global.browserWindowList[this.winHash];
+        
         (this.win as BrowserWindow).destroy();
         this.win = null;
     }

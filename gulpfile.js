@@ -37,7 +37,7 @@ gulp.task('copyElectronNodeModules', done => {
 
 gulp.task('writeElectronRunPack', done => {
 	const content = {main: './electron-start.js'};
-	fs.writeFile(path.join(electron_resource_path, '/package.json'), JSON.stringify(content), () => {
+	fs.writeFile(path.join(electron_dist_path, '/package.json'), JSON.stringify(content), () => {
 		done();
 	});
 });

@@ -5,8 +5,6 @@ import {config}               from "../../config";
 
 declare var global: any;
 
-let isDisplay = false;
-
 export class SearchWindow {
 
     public win: BrowserWindow | null;
@@ -18,10 +16,12 @@ export class SearchWindow {
         title          : 'Search',
         minimizable    : false,
         maximizable    : false,
-        minWidth       : 750,
-        minHeight      : 500,
-        // maxWidth       : 1024,
-        // maxHeight      : 700,
+        minWidth       : 500,
+        minHeight      : 328,
+        width          : 500,
+        height         : 328,
+        maxWidth       : 750,
+        maxHeight      : 500,
         show           : false,
         closable       : false,
         fullscreenable : false,
@@ -44,7 +44,7 @@ export class SearchWindow {
 
     public created(): BrowserWindow | void {
 
-        if (!isDisplay && !global.browserWindowList[this.winHash]) {
+        if (!global.browserWindowList[this.winHash]) {
 
             this.win = new BrowserWindow(this.option);
 
@@ -59,7 +59,6 @@ export class SearchWindow {
                 this.destroy();
             });
 
-            isDisplay                              = true;
             global.browserWindowList[this.winHash] = this.win;
 
             return this.win;
@@ -75,9 +74,6 @@ export class SearchWindow {
         delete global.browserWindowList[this.winHash];
         (this.win as BrowserWindow).destroy();
         this.win = null;
-        setTimeout(() => {
-            isDisplay = false;
-        });
     }
 
 }
