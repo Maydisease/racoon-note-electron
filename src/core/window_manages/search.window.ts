@@ -48,7 +48,7 @@ export class SearchWindow {
 
             this.win = new BrowserWindow(this.option);
 
-            this.win.loadURL(`http://${this.pageLoadURL}`);
+            this.win.loadURL(this.pageLoadURL);
 
             this.win.once('ready-to-show', () => {
                 (this.win as BrowserWindow).show();

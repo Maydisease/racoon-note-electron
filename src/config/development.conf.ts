@@ -4,7 +4,7 @@ import basicConf from './basic.conf';
 export default {
     'ENV'   : 'development',
     'APP'   : {
-        'HOST': 'localhost',
+        'HOST': 'http://localhost',
         'PORT': '3000'
     },
     'DB'    : {

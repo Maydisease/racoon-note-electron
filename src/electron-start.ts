@@ -5,8 +5,6 @@ import {createdWindow}                           from './core/service/createdWin
 import {WindowManages}                           from "./core/window_manages";
 import {menuTemplateConf}                        from "./config/menu";
 
-console.log(config);
-
 declare var global: any;
 global.isValidToken      = false;
 global.browserWindowList = {};
