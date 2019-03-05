@@ -23,7 +23,7 @@ class SignStateModel extends Module {
             .getCount();
     }
 
-    public async putSignState(token: string) {
+    public async putSignState(token: string, private_space: string) {
         const connection = await this.$connection;
         return await connection
             .getRepository(SignStateEntity)
@@ -31,7 +31,7 @@ class SignStateModel extends Module {
             .insert()
             .into(SignStateEntity)
             .values([
-                {token: token}
+                {token, private_space}
             ])
             .execute();
     }

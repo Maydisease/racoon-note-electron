@@ -16,16 +16,13 @@ class signStateService {
         return this.signStateModel.verifySignState();
     }
 
-    public async putSignState(token: string): Promise<object> {
-
-        let response: any = '';
+    public async putSignState(token: string, private_space: string): Promise<object> {
 
         if (await this.verifySignState() > 0) {
             await this.removeSignState();
-            response = await this.signStateModel.putSignState(token);
-        } else {
-            response = await this.signStateModel.putSignState(token);
         }
+
+        const response: any = await this.signStateModel.putSignState(token, private_space);
 
         return response;
     }

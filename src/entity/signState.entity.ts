@@ -13,4 +13,7 @@ export class SignStateEntity extends BaseEntity {
     @Column({type: 'varchar', nullable: true})
     token!: string;
 
+    @Column({type: 'varchar', nullable: true})
+    private_space!: string
+
 }

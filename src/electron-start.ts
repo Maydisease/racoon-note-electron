@@ -1,12 +1,15 @@
-import {app, BrowserWindow, ipcMain, Menu}       from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy} from './service';
-import {config}                                  from './config';
-import {createdWindow}                           from './core/service/createdWindow.service';
-import {WindowManages}                           from "./core/window_manages";
-import {menuTemplateConf}                        from "./config/menu";
+import {app, BrowserWindow, ipcMain, Menu, protocol} from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy}     from './service';
+import {config}                                      from './config';
+import {createdWindow}                               from './core/service/createdWindow.service';
+import {WindowManages}                               from "./core/window_manages";
+import {menuTemplateConf}                            from "./config/menu";
+
+protocol.registerStandardSchemes(['racoon']);
 
 declare var global: any;
 global.isValidToken      = false;
+global.privateSpace      = '';
 global.browserWindowList = {};
 
 global.service = {
@@ -77,6 +80,7 @@ if (!gotTheLock) {
         if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
             const validToken    = await new ServerProxy('User', 'verifySignState').send();
             global.isValidToken = validToken.result === 0;
+            global.privateSpace = localCacheSignStateInfo.private_space;
         } else {
             global.isValidToken = false;
         }
@@ -91,6 +95,16 @@ if (!gotTheLock) {
         Menu.setApplicationMenu(null);
         const menu = Menu.buildFromTemplate((menuTemplateConf.init() as any));
         Menu.setApplicationMenu(menu);
+
+        // /Users/medivh-mac/MyWork/racoon/electron/dist/attached/618f18f4fa22d292ca1e28865ddada7f/img/md55sd3sa21/mctttIfe.png
+        // http://localhost:4001/attached/618f18f4fa22d292ca1e28865ddada7f/img/md55sd3sa21/mctttIfe.png
+
+        // racoon://img/h5llasd.png
+        //<img src='racoon://img/md55sd3sa21/mctttIfe.png' />
+        protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
+            const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
+            callback(newProtocolRequest)
+        });
 
     });
 
