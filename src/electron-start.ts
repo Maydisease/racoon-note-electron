@@ -1,9 +1,9 @@
-import {app, BrowserWindow, ipcMain, Menu, protocol} from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy}     from './service';
-import {config}                                      from './config';
-import {createdWindow}                               from './core/service/createdWindow.service';
-import {WindowManages}                               from "./core/window_manages";
-import {menuTemplateConf}                            from "./config/menu";
+import {app, BrowserWindow, dialog, ipcMain, Menu, protocol} from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy}             from './service';
+import {config}                                              from './config';
+import {createdWindow}                                       from './core/service/createdWindow.service';
+import {WindowManages}                                       from "./core/window_manages";
+import {menuTemplateConf}                                    from "./config/menu";
 
 protocol.registerStandardSchemes(['racoon']);
 
@@ -46,6 +46,15 @@ global.service = {
         if (typeof validToken.raw === 'object' && validToken.raw.length === 0) {
             global.service.AppReset();
         }
+    },
+    SelectFiles      : () => {
+        return new Promise((resolve, reject) => {
+            const parentWin = global.browserWindowList['master'];
+            dialog.showOpenDialog(parentWin, {properties: ['openFile', 'multiSelections']}, (files: any) => {
+                resolve(files);
+            });
+        });
+
     }
 };
 
