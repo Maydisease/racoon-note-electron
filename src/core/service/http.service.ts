@@ -10,7 +10,7 @@ export class Http {
     public method: string;
     public authToken: string | undefined;
 
-    constructor(url: string, params: any = {}, headers: object = {}, method: string = 'GET') {
+    constructor(url: string, params: any = {}, headers: object = {}, method: string = 'POST') {
         this.url       = url;
         this.params    = params;
         this.method    = method;

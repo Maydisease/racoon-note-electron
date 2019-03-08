@@ -1,11 +1,11 @@
-import {app, BrowserWindow, dialog, ipcMain, Menu, protocol} from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy}             from './service';
-import {config}                                              from './config';
-import {createdWindow}                                       from './core/service/createdWindow.service';
-import {WindowManages}                                       from "./core/window_manages";
-import {menuTemplateConf}                                    from "./config/menu";
-import path                                                  from "path";
-import fs                                                    from "fs";
+import {app, BrowserWindow, dialog, ipcMain, Menu, protocol}        from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload} from './service';
+import {config}                                                     from './config';
+import {createdWindow}                                              from './core/service/createdWindow.service';
+import {WindowManages}                                              from "./core/window_manages";
+import {menuTemplateConf}                                           from "./config/menu";
+import path                                                         from "path";
+import fs                                                           from "fs";
 
 protocol.registerStandardSchemes(['racoon']);
 
@@ -16,6 +16,7 @@ global.browserWindowList = {};
 
 global.service = {
     ServerProxy,
+    ServerProxyUpload,
     CurrentWindow,
     browserWindowList: () => global.browserWindowList,
     ClientCache,
