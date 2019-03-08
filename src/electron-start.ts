@@ -14,16 +14,6 @@ global.isValidToken      = false;
 global.privateSpace      = '';
 global.browserWindowList = {};
 
-// const bytesToSize = (bytes: number): string => {
-//     if (bytes === 0) return '0 B';
-//     const k     = 1024;
-//     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-//     const i     = Math.floor(Math.log(bytes) / Math.log(k));
-//     //return (bytes / Math.pow(k, i)) + ' ' + sizes[i];
-//     return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-//     //toPrecision(3) 后面保留两位小数，如1.00GB
-// };
-
 global.service = {
     ServerProxy,
     CurrentWindow,
@@ -63,16 +53,20 @@ global.service = {
         return new Promise((resolve, reject) => {
             const parentWin = global.browserWindowList['master'];
             dialog.showOpenDialog(parentWin, options, (files: string[]) => {
-                const data: any = [];
-                files.forEach(async (file: string, index: number) => {
-                    const filePostfix    = path.extname(file);
-                    const fileName       = path.basename(file);
-                    const stat: fs.Stats = fs.statSync(file);
-                    if (stat) {
-                        data.push({name: fileName, type: filePostfix, size: stat.size, path: file});
-                    }
-                });
-                resolve(data);
+                if (files) {
+                    const data: any = [];
+                    files.forEach(async (file: string, index: number) => {
+                        const filePostfix    = path.extname(file);
+                        const fileName       = path.basename(file);
+                        const stat: fs.Stats = fs.statSync(file);
+                        if (stat) {
+                            data.push({name: fileName, type: filePostfix, size: stat.size, path: file});
+                        }
+                    });
+                    resolve(data);
+                } else {
+                    resolve();
+                }
             });
         });
     }
