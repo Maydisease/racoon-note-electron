@@ -13,6 +13,10 @@ export default {
     },
     'SERVER': {
         'HOST': 'http://note-server.wunao.net',
-        'PORT': '80'
+        'PORT': '80',
+        'ATTACHED_FILES': {
+            'HOST': 'http://note-files.wunao.net',
+            'PORT': '80'
+        }
     }
 }

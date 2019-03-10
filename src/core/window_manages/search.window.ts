@@ -1,5 +1,4 @@
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import path                   from 'path';
 import {BrowserWindow}        from 'electron';
 import {config}               from "../../config";
 
@@ -23,7 +22,7 @@ export class SearchWindow {
         maxWidth       : 750,
         maxHeight      : 500,
         show           : false,
-        closable       : false,
+        closable       : true,
         fullscreenable : false,
         resizable      : true,
         autoHideMenuBar: true,
@@ -56,7 +55,9 @@ export class SearchWindow {
             });
 
             this.win.on('close', (e) => {
-                this.destroy();
+                (this.win as BrowserWindow).hide();
+                // this.destroy();
+                e.preventDefault();
             });
 
             global.browserWindowList[this.winHash] = this.win;

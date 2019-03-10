@@ -13,7 +13,11 @@ export default {
     },
     'SERVER': {
         'HOST': 'http://localhost',
-        'PORT': '4001'
+        'PORT': '4001',
+        'ATTACHED_FILES': {
+            'HOST': 'http://localhost',
+            'PORT': '4001',
+        }
     },
     'CHROME_EXTENSIONS': {
         'ReduxDevTools' : '/Library/Application Support/Google/Chrome/Default/Extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0'

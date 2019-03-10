@@ -15,16 +15,12 @@ export class AttachedWindow {
         title          : 'Attached',
         minimizable    : false,
         maximizable    : false,
-        // minWidth       : 500,
-        // minHeight      : 328,
-        width          : 1024,
-        height         : 768,
-        // maxWidth       : 750,
-        // maxHeight      : 500,
+        width          : 545,
+        height         : 510,
         show           : false,
-        closable       : false,
+        closable       : true,
         fullscreenable : false,
-        resizable      : true,
+        resizable      : false,
         autoHideMenuBar: true,
         parent         : (global.browserWindowList as any)['master'],
         backgroundColor: '#1E2022',
@@ -55,7 +51,9 @@ export class AttachedWindow {
             });
 
             this.win.on('close', (e) => {
-                this.destroy();
+                // this.destroy();
+                (this.win as BrowserWindow).hide();
+                e.preventDefault();
             });
 
             global.browserWindowList[this.winHash] = this.win;
