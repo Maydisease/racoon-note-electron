@@ -32,13 +32,13 @@ export class SignWindow {
     };
 
     constructor(OnDevTools: boolean, parentWin: BrowserWindow, Option: any = {}) {
+        const time       = new Date().getTime();
         this.winHash     = 'sign';
         this.win         = null;
         this.parentWin   = parentWin;
-        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/sign_in`;
+        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/sign_in?time=${time}`;
         this.option      = {...this.option, ...Option};
         this.onDevTools  = OnDevTools;
-        console.log(this.pageLoadURL);
     }
 
     public created(): BrowserWindow {

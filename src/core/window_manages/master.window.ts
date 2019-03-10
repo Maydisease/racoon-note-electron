@@ -1,6 +1,6 @@
-import {ChromeExtensionsLoad} from "../../chrome_extensions";
 import {BrowserWindow}        from 'electron';
 import {config}               from "../../config";
+import {ChromeExtensionsLoad} from "../../chrome_extensions";
 
 declare var global: any;
 
@@ -25,12 +25,12 @@ export class MasterWindow {
     };
 
     constructor(routePath: string | null = null, OnDevTools: boolean, Option: any = {}) {
+        const time       = new Date().getTime();
         this.winHash     = 'master';
         this.win         = null;
-        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/${routePath ? routePath : ''}`;
+        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/${routePath ? routePath : ''}?time=${time}`;
         this.option      = {...this.option, ...Option};
         this.onDevTools  = OnDevTools;
-        console.log(this.pageLoadURL);
     }
 
     public created(): BrowserWindow {
@@ -42,13 +42,14 @@ export class MasterWindow {
         this.win.once('ready-to-show', () => {
             (this.win as BrowserWindow).show();
             global.browserWindowList[this.winHash] = this.win;
+            // (this.win as BrowserWindow).webContents.openDevTools();
             this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
         });
 
         this.win.on('close', (e) => {
             if (process.platform !== 'darwin') {
                 this.destroy();
-            }else{
+            } else {
                 this.getWin();
             }
         });
@@ -58,14 +59,14 @@ export class MasterWindow {
     }
 
     public getWin() {
-        if(global.browserWindowList['search']) {
+        if (global.browserWindowList['search']) {
             delete global.browserWindowList['search'];
         }
     }
 
     public destroy() {
         delete global.browserWindowList[this.winHash];
-        
+
         (this.win as BrowserWindow).destroy();
         this.win = null;
     }

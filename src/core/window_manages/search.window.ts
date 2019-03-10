@@ -34,9 +34,10 @@ export class SearchWindow {
     };
 
     constructor(OnDevTools: boolean, Option: any = {}) {
+        const time       = new Date().getTime();
         this.winHash     = 'search';
         this.win         = null;
-        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/note_search`;
+        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/note_search?time=${time}`;
         this.option      = {...this.option, ...Option};
         this.onDevTools  = OnDevTools;
     }
