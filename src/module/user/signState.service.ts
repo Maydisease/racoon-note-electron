@@ -1,5 +1,7 @@
 import {SignStateModel} from './signState.model';
 
+declare var global: any;
+
 class signStateService {
 
     public signStateModel: SignStateModel;
@@ -22,6 +24,7 @@ class signStateService {
             await this.removeSignState();
         }
 
+        global.privateSpace = private_space;
         const response: any = await this.signStateModel.putSignState(token, private_space);
 
         return response;

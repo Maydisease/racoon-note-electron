@@ -70,6 +70,8 @@ class AttachedService {
             newProtocolRequest.url  = this.remoteAttachedPath;
         }
 
+        console.log(newProtocolRequest);
+
         return newProtocolRequest
 
     }
