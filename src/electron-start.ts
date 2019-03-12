@@ -134,7 +134,7 @@ if (!gotTheLock) {
     });
 
     app.on('activate', (event: any, isShow: any) => {
-        if (!isShow && global.service.browserWindowList()['master'] && global.service.browserWindowList()['master'].isDestroyed()) {
+        if (!isShow && global.service.browserWindowList()['master'].isDestroyed()) {
             if (!global.isValidToken) {
                 masterWindow = new WindowManages.master(null, true).created();
                 signWindow   = new WindowManages.sign(false, masterWindow).created();
