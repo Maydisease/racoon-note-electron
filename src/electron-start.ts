@@ -120,11 +120,6 @@ if (!gotTheLock) {
         const menu = Menu.buildFromTemplate((menuTemplateConf.init() as any));
         Menu.setApplicationMenu(menu);
 
-        // /Users/medivh-mac/MyWork/racoon/electron/dist/attached/618f18f4fa22d292ca1e28865ddada7f/img/md55sd3sa21/mctttIfe.png
-        // http://localhost:4001/attached/618f18f4fa22d292ca1e28865ddada7f/img/md55sd3sa21/mctttIfe.png
-
-        // racoon://img/h5llasd.png
-        //<img src='racoon://img/md55sd3sa21/mctttIfe.png' />
         protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
             const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
             callback(newProtocolRequest)
@@ -139,7 +134,7 @@ if (!gotTheLock) {
     });
 
     app.on('activate', (event: any, isShow: any) => {
-        if (!isShow && global.service.browserWindowList()['master'].isDestroyed()) {
+        if (!isShow && global.service.browserWindowList()['master'] && global.service.browserWindowList()['master'].isDestroyed()) {
             if (!global.isValidToken) {
                 masterWindow = new WindowManages.master(null, true).created();
                 signWindow   = new WindowManages.sign(false, masterWindow).created();
