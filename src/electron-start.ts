@@ -100,6 +100,8 @@ if (!gotTheLock) {
 
     app.on('ready', async () => {
 
+        console.log('ready.....');
+
         const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
         if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
             const validToken    = await new ServerProxy('User', 'verifySignState').send();
@@ -133,8 +135,9 @@ if (!gotTheLock) {
         }
     });
 
-    app.on('activate', (event: any, isShow: any) => {
+    app.on('activate', async (event: any, isShow: any) => {
         if (!isShow && global.service.browserWindowList()['master'].isDestroyed()) {
+
             if (!global.isValidToken) {
                 masterWindow = new WindowManages.master(null, true).created();
                 signWindow   = new WindowManages.sign(false, masterWindow).created();

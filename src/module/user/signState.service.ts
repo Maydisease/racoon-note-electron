@@ -25,6 +25,7 @@ class signStateService {
         }
 
         global.privateSpace = private_space;
+        global.isValidToken = true;
         const response: any = await this.signStateModel.putSignState(token, private_space);
 
         return response;
