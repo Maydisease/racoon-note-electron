@@ -9,10 +9,19 @@ import fs                                                           from "fs";
 
 protocol.registerStandardSchemes(['racoon']);
 
-declare var global: any;
+declare var global: {
+    isValidToken: boolean,
+    privateSpace: string,
+    browserWindowList: any
+    isTrueClose: boolean,
+    service: any
+};
+
+
 global.isValidToken      = false;
 global.privateSpace      = '';
 global.browserWindowList = {};
+global.isTrueClose       = false;
 
 global.service = {
     ServerProxy,
@@ -84,68 +93,63 @@ let signWindow: BrowserWindow;
 app.disableHardwareAcceleration();
 // 单个实例锁
 const gotTheLock = app.requestSingleInstanceLock();
+
 if (!gotTheLock) {
-    app.quit()
-} else {
-
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // Someone tried to run a second instance, we should focus our window.
-        if (masterWindow) {
-            if (masterWindow.isMinimized()) {
-                masterWindow.restore();
-            }
-            masterWindow.focus()
-        }
-    });
-
-    app.on('ready', async () => {
-
-        console.log('ready.....');
-
-        const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
-        if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
-            const validToken    = await new ServerProxy('User', 'verifySignState').send();
-            global.isValidToken = validToken.result === 0;
-            global.privateSpace = localCacheSignStateInfo.private_space;
-        } else {
-            global.isValidToken = false;
-        }
-
-        if (!global.isValidToken) {
-            masterWindow = new WindowManages.master(null, true).created();
-            signWindow   = new WindowManages.sign(true, masterWindow).created();
-        } else {
-            masterWindow = new WindowManages.master('note', true).created();
-        }
-
-        Menu.setApplicationMenu(null);
-        const menu = Menu.buildFromTemplate((menuTemplateConf.init() as any));
-        Menu.setApplicationMenu(menu);
-
-        protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
-            const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
-            callback(newProtocolRequest)
-        });
-
-    });
-
-    app.on('window-all-closed', () => {
-        if (process.platform !== 'darwin') {
-            app.quit();
-        }
-    });
-
-    app.on('activate', async (event: any, isShow: any) => {
-        if (!isShow && global.service.browserWindowList()['master'].isDestroyed()) {
-
-            if (!global.isValidToken) {
-                masterWindow = new WindowManages.master(null, true).created();
-                signWindow   = new WindowManages.sign(false, masterWindow).created();
-            } else {
-                masterWindow = new WindowManages.master('note', true).created();
-            }
-        }
-    });
-
+    app.quit();
 }
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (masterWindow) {
+        if (masterWindow.isMinimized()) {
+            masterWindow.restore();
+        }
+        masterWindow.focus()
+    }
+});
+
+app.on('ready', async () => {
+
+    const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
+    if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
+        const validToken    = await new ServerProxy('User', 'verifySignState').send();
+        global.isValidToken = validToken.result === 0;
+        global.privateSpace = localCacheSignStateInfo.private_space;
+    } else {
+        global.isValidToken = false;
+    }
+
+    if (!global.isValidToken) {
+        masterWindow = new WindowManages.master(null, true).created();
+        signWindow   = new WindowManages.sign(true, masterWindow).created();
+    } else {
+        masterWindow = new WindowManages.master('note', true).created();
+    }
+
+    Menu.setApplicationMenu(null);
+    const menu = Menu.buildFromTemplate((menuTemplateConf.init() as any));
+    Menu.setApplicationMenu(menu);
+
+    // 注册私有协议
+    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
+        const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
+        callback(newProtocolRequest)
+    });
+
+});
+
+// 所有窗口被关闭后
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+// 在app退出之前
+app.on('before-quit', () => {
+    global.isTrueClose = true;
+});
+
+// 当app在dock栏上点击被激活后
+app.on('activate', async (event: any, isShow: any) => {
+    (global.service.browserWindowList()['master'] as BrowserWindow).show()
+});
 

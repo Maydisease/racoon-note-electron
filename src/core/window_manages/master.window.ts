@@ -1,4 +1,4 @@
-import {BrowserWindow}        from 'electron';
+import {app, BrowserWindow}   from 'electron';
 import {config}               from "../../config";
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
 
@@ -47,10 +47,11 @@ export class MasterWindow {
         });
 
         this.win.on('close', (e) => {
-            if (process.platform !== 'darwin') {
-                this.destroy();
+            if (!global.isTrueClose) {
+                (this.win as BrowserWindow).hide();
+                e.preventDefault();
             } else {
-                this.getWin();
+                app.exit();
             }
         });
 
@@ -59,9 +60,7 @@ export class MasterWindow {
     }
 
     public getWin() {
-        if (global.browserWindowList['search']) {
-            delete global.browserWindowList['search'];
-        }
+
     }
 
     public destroy() {
