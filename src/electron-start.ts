@@ -136,7 +136,8 @@ app.on('ready', async () => {
     trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
     tray.setContextMenu(trayMenu);
     tray.on('double-click', () => {
-        masterWindow.show();
+        global.service.browserWindowList()['master'].show();
+        global.service.browserWindowList()['master'].focus();
     });
 
     // 注册私有协议
