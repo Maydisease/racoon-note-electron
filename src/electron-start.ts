@@ -1,11 +1,12 @@
-import {app, BrowserWindow, dialog, ipcMain, Menu, protocol}        from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload} from './service';
-import {config}                                                     from './config';
-import {createdWindow}                                              from './core/service/createdWindow.service';
-import {WindowManages}                                              from "./core/window_manages";
-import {menuTemplateConf}                                           from "./config/menu";
-import path                                                         from "path";
-import fs                                                           from "fs";
+import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray} from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload}             from './service';
+import {config}                                                                 from './config';
+import {createdWindow}                                                          from './core/service/createdWindow.service';
+import {WindowManages}                                                          from "./core/window_manages";
+import {topBarMenuTemplateConf}                                                 from "./config/menus/topBarMenu";
+import {trayMenuTemplateConf}                                                   from "./config/menus/trayMenu";
+import path                                                                     from "path";
+import fs                                                                       from "fs";
 
 protocol.registerStandardSchemes(['racoon']);
 
@@ -88,6 +89,9 @@ ipcMain.on('getBrowserWindowList', (event: any) => {
 
 let masterWindow: BrowserWindow;
 let signWindow: BrowserWindow;
+let topBarMenu: Menu;
+let tray: Tray;
+let trayMenu: Menu;
 
 // 禁用硬件加速
 app.disableHardwareAcceleration();
@@ -125,8 +129,15 @@ app.on('ready', async () => {
     }
 
     Menu.setApplicationMenu(null);
-    const menu = Menu.buildFromTemplate((menuTemplateConf.init() as any));
-    Menu.setApplicationMenu(menu);
+    topBarMenu = Menu.buildFromTemplate(topBarMenuTemplateConf);
+    Menu.setApplicationMenu(topBarMenu);
+
+    tray     = new Tray(nativeImage.createFromDataURL(config.ICONS['16x16'].source));
+    trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
+    tray.setContextMenu(trayMenu);
+    tray.on('double-click', () => {
+        masterWindow.show();
+    });
 
     // 注册私有协议
     protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
@@ -145,6 +156,7 @@ app.on('window-all-closed', () => {
 
 // 在app退出之前
 app.on('before-quit', () => {
+    console.log('close');
     global.isTrueClose = true;
 });
 
