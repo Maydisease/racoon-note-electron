@@ -22,7 +22,7 @@ export class SignWindow {
         closable       : false,
         show           : false,
         fullscreenable : false,
-        resizable      : true,
+        resizable      : false,
         autoHideMenuBar: true,
         parent         : global.browserWindowList['master'],
         backgroundColor: '#1E2022',
