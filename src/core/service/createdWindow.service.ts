@@ -15,10 +15,6 @@ const createdWindow = (options: object, renderAddress: string) => {
             break;
     }
 
-    // windowProcess.on('closed', () => {
-    //     windowProcess = null
-    // });
-
     windowProcess.once('ready-to-show', () => {
         (<any>windowProcess).show();
         // (<any>windowProcess).webContents.openDevTools();

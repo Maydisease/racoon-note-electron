@@ -20,7 +20,7 @@ export class AttachedWindow {
         show           : false,
         closable       : true,
         fullscreenable : false,
-        resizable      : false,
+        resizable      : config.ENV === 'development',
         autoHideMenuBar: true,
         parent         : (global.browserWindowList as any)['master'],
         backgroundColor: '#1E2022',

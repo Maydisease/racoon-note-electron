@@ -24,7 +24,7 @@ export class SearchWindow {
         show           : false,
         closable       : true,
         fullscreenable : false,
-        resizable      : true,
+        resizable      : config.ENV === 'development',
         autoHideMenuBar: true,
         parent         : (global.browserWindowList as any)['master'],
         backgroundColor: '#1E2022',
