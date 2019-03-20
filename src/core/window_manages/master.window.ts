@@ -18,7 +18,7 @@ export class MasterWindow {
         focusable      : true,
         show           : false,
         autoHideMenuBar: true,
-        resizable      : false,
+        resizable      : true,
         backgroundColor: '#1E2022',
         webPreferences : {
             webSecurity: true
