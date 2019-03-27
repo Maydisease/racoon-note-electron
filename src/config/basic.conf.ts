@@ -14,5 +14,6 @@ basicConf.ROOT_PATH    = path.join(__dirname, '..');
 basicConf.ICONS        = icons;
 basicConf.SERVICE_PATH = path.join(basicConf.ROOT_PATH, 'service');
 basicConf.MODULE_PATH  = path.join(basicConf.ROOT_PATH, 'module/');
+basicConf.HTML_PATH    = path.join(basicConf.ROOT_PATH, 'html/');
 
 export default basicConf

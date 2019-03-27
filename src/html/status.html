@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        text-align: center;
+    }
+
+    html {
+        -webkit-app-region: drag;
+    }
+
+    h1 {
+        left: 50%;
+        top: 50%;
+        font-size: 24px;
+        transform: translate(-50%, -50%);
+        color: RGBA(255, 255, 255, .7);
+        position: absolute;
+    }
+
+    button {
+        height: 24px;
+        line-height: 22px;
+        background: none;
+        border: 1px solid RGBA(255,255,255,.2);
+        padding: 0 15px;
+        outline: none;
+        cursor: pointer;
+        margin-top: 30px;
+        font-size: 12px;
+        font-weight: bold;
+        color: RGBA(255, 255, 255, .4);
+        box-sizing: border-box;
+        -webkit-app-region: no-drag;
+    }
+
+    button:hover {
+        color: RGBA(255, 255, 255, .6);
+    }
+</style>
+<script>
+	const electron = require('electron');
+	const retry    = () => {
+		electron.remote.getGlobal('service').appReadyInit();
+	};
+</script>
+<body>
+<h1>
+    <p>Network Error</p>
+    <p>
+        <button onClick="retry()">Retry</button>
+    </p>
+</h1>
+</body>
+</html>

@@ -2,11 +2,12 @@ import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray} 
 import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload}             from './service';
 import {config}                                                                 from './config';
 import {createdWindow}                                                          from './core/service/createdWindow.service';
-import {WindowManages}                                                          from "./core/window_manages";
-import {topBarMenuTemplateConf}                                                 from "./config/menus/topBarMenu";
-import {trayMenuTemplateConf}                                                   from "./config/menus/trayMenu";
-import path                                                                     from "path";
-import fs                                                                       from "fs";
+import {WindowManages}          from "./core/window_manages";
+import {topBarMenuTemplateConf} from "./config/menus/topBarMenu";
+import {trayMenuTemplateConf}   from "./config/menus/trayMenu";
+import path                     from "path";
+import fs                       from "fs";
+import * as systeminformation   from 'systeminformation';
 
 protocol.registerStandardSchemes(['racoon']);
 
@@ -24,7 +25,115 @@ global.privateSpace      = '';
 global.browserWindowList = {};
 global.isTrueClose       = false;
 
+ipcMain.on('getBrowserWindowList', (event: any) => {
+    event.returnValue = global.browserWindowList;
+});
+
+let masterWindow: BrowserWindow;
+let signWindow: BrowserWindow;
+let statusWindow: BrowserWindow;
+let topBarMenu: Menu;
+let tray: Tray;
+let trayMenu: Menu;
+
+// 禁用硬件加速
+app.disableHardwareAcceleration();
+// 单个实例锁
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+    app.quit();
+}
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (masterWindow) {
+        if (masterWindow.isMinimized()) {
+            masterWindow.restore();
+        }
+        masterWindow.focus()
+    }
+});
+
+const appReadyInit = async () => {
+
+    const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);
+
+    if (networkStatus.status !== 200) {
+        if (statusWindow && statusWindow.isVisible()) {
+            statusWindow.focus();
+        } else {
+            statusWindow = new WindowManages.status(null, true).created();
+        }
+        return false;
+    } else {
+        if (statusWindow) {
+            statusWindow.destroy();
+        }
+    }
+
+    const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
+    if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
+        const validToken    = await new ServerProxy('User', 'verifySignState').send();
+        global.isValidToken = validToken.result === 0;
+        global.privateSpace = localCacheSignStateInfo.private_space;
+    } else {
+        global.isValidToken = false;
+    }
+
+    if (!global.isValidToken) {
+        masterWindow = new WindowManages.master(null, true).created();
+        signWindow   = new WindowManages.sign(true, masterWindow).created();
+    } else {
+        masterWindow = new WindowManages.master('note', true).created();
+    }
+
+    Menu.setApplicationMenu(null);
+    topBarMenu = Menu.buildFromTemplate(topBarMenuTemplateConf);
+    Menu.setApplicationMenu(topBarMenu);
+
+    tray     = new Tray(nativeImage.createFromDataURL(config.ICONS['16x16'].source));
+    trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
+    tray.setContextMenu(trayMenu);
+    tray.on('double-click', () => {
+        global.service.browserWindowList()['master'].show();
+        global.service.browserWindowList()['master'].focus();
+    });
+
+    // 注册私有协议
+    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
+        const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
+        callback(newProtocolRequest)
+    });
+};
+
+
+app.on('ready', async () => {
+    await appReadyInit();
+});
+
+// 所有窗口被关闭后
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+// 在app退出之前
+app.on('before-quit', () => {
+    global.isTrueClose = true;
+});
+
+// 当app在dock栏上点击被激活后
+app.on('activate', async (event: any, isShow: any) => {
+    if (global.service.browserWindowList()['master']) {
+        (global.service.browserWindowList()['master'] as BrowserWindow).show();
+    }
+    if (global.service.browserWindowList()['status']) {
+        (global.service.browserWindowList()['status'] as BrowserWindow).show();
+    }
+});
+
 global.service = {
+    appReadyInit,
     ServerProxy,
     ServerProxyUpload,
     CurrentWindow,
@@ -82,87 +191,3 @@ global.service = {
         });
     }
 };
-
-ipcMain.on('getBrowserWindowList', (event: any) => {
-    event.returnValue = global.browserWindowList;
-});
-
-let masterWindow: BrowserWindow;
-let signWindow: BrowserWindow;
-let topBarMenu: Menu;
-let tray: Tray;
-let trayMenu: Menu;
-
-// 禁用硬件加速
-app.disableHardwareAcceleration();
-// 单个实例锁
-const gotTheLock = app.requestSingleInstanceLock();
-
-if (!gotTheLock) {
-    app.quit();
-}
-app.on('second-instance', (event, commandLine, workingDirectory) => {
-    if (masterWindow) {
-        if (masterWindow.isMinimized()) {
-            masterWindow.restore();
-        }
-        masterWindow.focus()
-    }
-});
-
-app.on('ready', async () => {
-
-    const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
-    if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
-        const validToken    = await new ServerProxy('User', 'verifySignState').send();
-        global.isValidToken = validToken.result === 0;
-        global.privateSpace = localCacheSignStateInfo.private_space;
-    } else {
-        global.isValidToken = false;
-    }
-
-    if (!global.isValidToken) {
-        masterWindow = new WindowManages.master(null, true).created();
-        signWindow   = new WindowManages.sign(true, masterWindow).created();
-    } else {
-        masterWindow = new WindowManages.master('note', true).created();
-    }
-
-    Menu.setApplicationMenu(null);
-    topBarMenu = Menu.buildFromTemplate(topBarMenuTemplateConf);
-    Menu.setApplicationMenu(topBarMenu);
-
-    tray     = new Tray(nativeImage.createFromDataURL(config.ICONS['16x16'].source));
-    trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
-    tray.setContextMenu(trayMenu);
-    tray.on('double-click', () => {
-        global.service.browserWindowList()['master'].show();
-        global.service.browserWindowList()['master'].focus();
-    });
-
-    // 注册私有协议
-    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
-        const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
-        callback(newProtocolRequest)
-    });
-
-});
-
-// 所有窗口被关闭后
-app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') {
-        app.quit();
-    }
-});
-
-// 在app退出之前
-app.on('before-quit', () => {
-    console.log('close');
-    global.isTrueClose = true;
-});
-
-// 当app在dock栏上点击被激活后
-app.on('activate', async (event: any, isShow: any) => {
-    (global.service.browserWindowList()['master'] as BrowserWindow).show()
-});
-
