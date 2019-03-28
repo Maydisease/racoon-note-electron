@@ -36,15 +36,37 @@ export const topBarMenuTemplateConf: MenuItemConstructorOptions[] = [
                 }
             },
             {
-                label      : 'search',
+                label      : 'super search',
                 accelerator: 'CmdOrCtrl+Shift+F',
                 click      : () => {
                     const masterWin = global.browserWindowList['master'];
                     masterWin.webContents.send('windowKeyboard', 'CMD_OR_CTRL_SHIFT_F');
                 }
             },
-            {role: 'undo'},
-            {role: 'redo'},
+            {
+                label      : 'undo',
+                accelerator: 'CmdOrCtrl+Z',
+                click      : () => {
+                    const masterWin = global.browserWindowList['master'];
+                    masterWin.webContents.send('windowKeyboard', 'CMD_OR_CTRL_Z');
+                }
+            },
+            {
+                label      : 'redo',
+                accelerator: 'CmdOrCtrl+Shift+Z',
+                click      : () => {
+                    const masterWin = global.browserWindowList['master'];
+                    masterWin.webContents.send('windowKeyboard', 'CMD_OR_CTRL_SHIFT_Z');
+                }
+            },
+            {
+                label      : 'search',
+                accelerator: 'CmdOrCtrl+F',
+                click      : () => {
+                    const masterWin = global.browserWindowList['master'];
+                    masterWin.webContents.send('windowKeyboard', 'CMD_OR_CTRL_F');
+                }
+            },
             {type: 'separator'},
             {role: 'cut'},
             {role: 'copy'},
