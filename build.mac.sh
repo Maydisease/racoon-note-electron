@@ -4,7 +4,7 @@ tsc
 sleep 1s
 cp -rf node_modules ./dist/node_modules
 sleep 1s
-gulp copyHTML
+gulp copyHtml
 sleep 1s
 gulp writePkg
 sleep 1s

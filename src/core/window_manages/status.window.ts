@@ -36,13 +36,15 @@ export class StatusWindow {
         const time       = new Date().getTime();
         this.winHash     = 'status';
         this.win         = null;
-        this.pageLoadURL = `${config.APP.HOST}:${config.APP.PORT}/${routePath ? routePath : ''}?time=${time}`;
+        this.pageLoadURL = `${path.join(config.HTML_PATH, './status.html')}?time=${time}`;
+
+        console.log(this.pageLoadURL);
 
         if (process.platform !== 'darwin') {
             delete this.option.frame;
             delete this.option.titleBarStyle;
             delete this.option.vibrancy;
-            this.option.backgroundColor = '1E2022';
+            this.option.backgroundColor = '#1E2022';
         }
 
         this.option = {...this.option, ...Option};
@@ -60,16 +62,12 @@ export class StatusWindow {
             (this.win as BrowserWindow).show();
             global.browserWindowList[this.winHash] = this.win;
             // (this.win as BrowserWindow).webContents.openDevTools();
-            // this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+            this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools();
         });
 
         this.win.on('close', (e) => {
-            if (!global.isTrueClose) {
-                (this.win as BrowserWindow).hide();
-                e.preventDefault();
-            } else {
-                app.exit();
-            }
+            console.log('close');
+            app.exit();
         });
 
         return this.win;

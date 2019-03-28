@@ -35,7 +35,7 @@ gulp.task('copyElectronNodeModules', done => {
 	done();
 });
 
-gulp.task('copyHTML', done => {
+gulp.task('copyElectronHtml', done => {
 	gulp.src(path.join(electron_html_path, '**/*'))
 	.on('error', function (err) {
 		gutil.log(gutil.colors.red('[Error]'), err.toString());
@@ -71,5 +71,5 @@ gulp.task('writeElectronRunPack', done => {
 
 gulp.task('clear', gulp.parallel('clearElectronBuildDir', 'clearElectronDistDir'));
 gulp.task('copyNodeModules', gulp.parallel('copyElectronNodeModules'));
-gulp.task('copyHTML', gulp.parallel('copyHTML'));
+gulp.task('copyHtml', gulp.parallel('copyElectronHtml'));
 gulp.task('writePkg', gulp.parallel('writeElectronRunPack'));

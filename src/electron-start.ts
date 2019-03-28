@@ -112,13 +112,15 @@ app.on('ready', async () => {
 
 // 所有窗口被关闭后
 app.on('window-all-closed', () => {
+    console.log('window-all-closed');
     if (process.platform !== 'darwin') {
-        app.quit();
+        // app.quit();
     }
 });
 
 // 在app退出之前
 app.on('before-quit', () => {
+    console.log('before-quit');
     global.isTrueClose = true;
 });
 
