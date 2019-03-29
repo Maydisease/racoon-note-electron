@@ -3,6 +3,7 @@ const path                       = require('path');
 const chalk                      = require('chalk');
 const del                        = require('del');
 const fs                         = require('fs');
+const package                    = require('./package.json');
 const gutil                      = require('gulp-util');
 const electron_src_path          = path.join(__dirname);
 const electron_dist_path         = path.join(electron_src_path, 'dist');
@@ -47,22 +48,8 @@ gulp.task('copyElectronHtml', done => {
 
 gulp.task('writeElectronRunPack', done => {
 	const content = {
-		main: './electron-start.js',
-		devDependencies: {
-			'@types/electron': '^1.6.10',
-			'@types/sqlite3': '^3.1.3',
-			'concurrently': '^4.1.0',
-			'cross-env': '^5.2.0',
-			'del': '^3.0.0',
-			'electron': '^4.0.1',
-			'electron-log': '^3.0.1',
-			'gulp': '^4.0.0',
-			'gulp-util': '^3.0.8'
-		},
-		dependencies: {
-			'typeorm': '^0.2.12',
-			'systeminformation': '^4.1.4'
-		}
+		main: 'electron-start.js',
+		dependencies: package.dependencies
 	};
 	fs.writeFile(path.join(electron_dist_path, '/package.json'), JSON.stringify(content), () => {
 		done();

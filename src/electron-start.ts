@@ -1,10 +1,10 @@
 import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray} from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload}             from './service';
-import {config}                                                                 from './config';
-import {createdWindow}                                                          from './core/service/createdWindow.service';
-import {WindowManages}          from "./core/window_manages";
-import {topBarMenuTemplateConf} from "./config/menus/topBarMenu";
-import {trayMenuTemplateConf}   from "./config/menus/trayMenu";
+import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload}             from './source/service';
+import {config}                                                                 from './source/config';
+import {createdWindow}                                                          from './source/core/service/createdWindow.service';
+import {WindowManages}          from "./source/core/window_manages";
+import {topBarMenuTemplateConf} from "./source/config/menus/topBarMenu";
+import {trayMenuTemplateConf}   from "./source/config/menus/trayMenu";
 import path                     from "path";
 import fs                       from "fs";
 import * as systeminformation   from 'systeminformation';
