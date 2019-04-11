@@ -39,8 +39,6 @@ export class StatusWindow {
         this.win         = null;
         this.pageLoadURL = `${path.join(config.HTML_PATH, './status.html')}?time=${time}`;
 
-        console.log(this.pageLoadURL);
-
         if (process.platform !== 'darwin') {
             delete this.option.frame;
             delete this.option.titleBarStyle;

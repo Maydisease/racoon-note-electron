@@ -40,7 +40,6 @@ export class MasterWindow {
         this.win = new BrowserWindow(this.option);
 
         this.win.loadURL(this.pageLoadURL);
-
         this.win.once('ready-to-show', () => {
             (this.win as BrowserWindow).show();
             global.browserWindowList[this.winHash] = this.win;

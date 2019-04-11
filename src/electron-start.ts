@@ -90,7 +90,7 @@ const appReadyInit = async () => {
     topBarMenu = Menu.buildFromTemplate(topBarMenuTemplateConf);
     Menu.setApplicationMenu(topBarMenu);
 
-    tray     = new Tray(nativeImage.createFromDataURL(config.ICONS['16x16'].source));
+    tray     = new Tray((nativeImage as any).createFromDataURL(config.ICONS['16x16'].source));
     trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
     tray.setContextMenu(trayMenu);
     tray.on('double-click', () => {
@@ -112,7 +112,6 @@ app.on('ready', async () => {
 
 // 所有窗口被关闭后
 app.on('window-all-closed', () => {
-    console.log('window-all-closed');
     if (process.platform !== 'darwin') {
         // app.quit();
     }
@@ -120,7 +119,6 @@ app.on('window-all-closed', () => {
 
 // 在app退出之前
 app.on('before-quit', () => {
-    console.log('before-quit');
     global.isTrueClose = true;
 });
 
