@@ -38,6 +38,7 @@ let trayMenu: Menu;
 
 // 禁用硬件加速
 app.disableHardwareAcceleration();
+app.disableDomainBlockingFor3DAPIs();
 // 单个实例锁
 const gotTheLock = app.requestSingleInstanceLock();
 
