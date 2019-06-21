@@ -27,7 +27,9 @@ export class SignWindow {
         parent         : global.browserWindowList['master'],
         backgroundColor: '#1E2022',
         webPreferences : {
-            webSecurity: true
+            nodeIntegration        : true,
+            nodeIntegrationInWorker: true,
+            webSecurity            : true
         }
     };
 

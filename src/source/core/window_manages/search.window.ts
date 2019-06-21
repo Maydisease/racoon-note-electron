@@ -29,7 +29,9 @@ export class SearchWindow {
         parent         : (global.browserWindowList as any)['master'],
         backgroundColor: '#1E2022',
         webPreferences : {
-            webSecurity: true
+            nodeIntegration        : true,
+            nodeIntegrationInWorker: true,
+            webSecurity            : true
         }
     };
 

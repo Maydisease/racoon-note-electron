@@ -2,14 +2,12 @@ import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray} 
 import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload}             from './source/service';
 import {config}                                                                 from './source/config';
 import {createdWindow}                                                          from './source/core/service/createdWindow.service';
-import {WindowManages}          from "./source/core/window_manages";
-import {topBarMenuTemplateConf} from "./source/config/menus/topBarMenu";
-import {trayMenuTemplateConf}   from "./source/config/menus/trayMenu";
-import path                     from "path";
-import fs                       from "fs";
-import * as systeminformation   from 'systeminformation';
-
-protocol.registerStandardSchemes(['racoon']);
+import {WindowManages}                                                          from "./source/core/window_manages";
+import {topBarMenuTemplateConf}                                                 from "./source/config/menus/topBarMenu";
+import {trayMenuTemplateConf}                                                   from "./source/config/menus/trayMenu";
+import path                                                                     from "path";
+import fs                                                                       from "fs";
+import * as systeminformation                                                   from 'systeminformation';
 
 declare var global: {
     isValidToken: boolean,
@@ -18,7 +16,6 @@ declare var global: {
     isTrueClose: boolean,
     service: any
 };
-
 
 global.isValidToken      = false;
 global.privateSpace      = '';
@@ -42,9 +39,9 @@ app.disableDomainBlockingFor3DAPIs();
 // 单个实例锁
 const gotTheLock = app.requestSingleInstanceLock();
 
-if (!gotTheLock) {
-    app.quit();
-}
+// if (!gotTheLock) {
+//     app.quit();
+// }
 app.on('second-instance', (event, commandLine, workingDirectory) => {
     if (masterWindow) {
         if (masterWindow.isMinimized()) {
@@ -173,7 +170,7 @@ global.service = {
     SelectFiles      : (parentWin: BrowserWindow, options: object) => {
         return new Promise((resolve, reject) => {
             const parentWin = global.browserWindowList['master'];
-            dialog.showOpenDialog(parentWin, options, (files: string[]) => {
+            dialog.showOpenDialog(parentWin, options, (files: string[] | undefined): void => {
                 if (files) {
                     const data: any = [];
                     files.forEach(async (file: string, index: number) => {

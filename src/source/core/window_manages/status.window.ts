@@ -28,8 +28,10 @@ export class StatusWindow {
         backgroundColor: '#00000000',
         vibrancy       : 'ultra-dark',
         webPreferences : {
-            webSecurity : true,
-            scrollBounce: true
+            nodeIntegration        : true,
+            nodeIntegrationInWorker: true,
+            webSecurity            : true,
+            scrollBounce           : true
         }
     };
 

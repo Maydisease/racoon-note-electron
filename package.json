@@ -20,12 +20,13 @@
 		"concurrently": "^4.1.0",
 		"cross-env": "^5.2.0",
 		"del": "^3.0.0",
-		"electron": "^4.0.1",
+		"electron": "^5.0.0",
 		"electron-log": "^3.0.1",
 		"gulp": "^4.0.0",
 		"gulp-util": "^3.0.8"
 	},
 	"dependencies": {
+		"sqlite3": "^4.0.9",
 		"systeminformation": "^4.1.4",
 		"typeorm": "^0.2.16"
 	}
