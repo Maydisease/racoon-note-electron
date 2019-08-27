@@ -21,7 +21,11 @@ export class ServerProxy {
         const url = `${this.remoteAddress}/${this.moduleName}/${this.actionName}`;
         return await new Http(url, this.params)
             .POST()
-            .then((response: any) => response)
-            .catch((err: Error) => ({result: 1, err}))
+            .then((response: any) => {
+                return response;
+            })
+            .catch((err: Error) => {
+                return {result: 1, err}
+            })
     }
 }

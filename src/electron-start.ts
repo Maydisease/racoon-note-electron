@@ -53,6 +53,7 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 
 const appReadyInit = async () => {
 
+    // 获取当前网络状态
     const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);
 
     if (networkStatus.status !== 200) {
@@ -68,6 +69,7 @@ const appReadyInit = async () => {
         }
     }
 
+    // 判断当前登陆状态
     const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
     if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
         const validToken    = await new ServerProxy('User', 'verifySignState').send();
@@ -77,17 +79,26 @@ const appReadyInit = async () => {
         global.isValidToken = false;
     }
 
+    // 如果验证没有通过
     if (!global.isValidToken) {
+        // 创建主窗口
         masterWindow = new WindowManages.master(null, true).created();
+        // 创建登陆窗口
         signWindow   = new WindowManages.sign(true, masterWindow).created();
-    } else {
+    }
+    // 如果验证通过了
+    else {
         masterWindow = new WindowManages.master('note', true).created();
     }
 
+    // 置空topMenu
     Menu.setApplicationMenu(null);
+    // 构建topMenu
     topBarMenu = Menu.buildFromTemplate(topBarMenuTemplateConf);
+    // 设置topMenu
     Menu.setApplicationMenu(topBarMenu);
 
+    // 创建托盘
     tray     = new Tray((nativeImage as any).createFromDataURL(config.ICONS['16x16'].source));
     trayMenu = Menu.buildFromTemplate(trayMenuTemplateConf);
     tray.setContextMenu(trayMenu);
@@ -187,5 +198,8 @@ global.service = {
                 }
             });
         });
+    },
+    localDbCache: {
+
     }
 };
