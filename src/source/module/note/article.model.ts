@@ -8,6 +8,7 @@ interface ArticleUpdateParams {
     title?: string;
     uid?: string;
     cid?: number;
+    lock: number;
     markdown_content?: string;
     html_content?: string;
     description?: string;
@@ -20,6 +21,7 @@ interface ArticleAddParams {
     title?: string;
     uid?: string;
     cid?: number;
+    lock: number;
     markdown_content?: string;
     html_content?: string;
     description?: string;
