@@ -8,8 +8,8 @@ const gutil                      = require('gulp-util');
 const electron_src_path          = path.join(__dirname);
 const electron_dist_path         = path.join(electron_src_path, 'dist');
 const electron_build_path        = path.join(electron_src_path, 'build');
-const electron_html_path         = path.join(electron_src_path, 'src/html');
-const electron_node_modules_path = path.join(electron_src_path, 'node_modules');
+const electron_html_path         = path.join(electron_src_path, 'src/source/html');
+const electron_node_modules_path = path.join(electron_src_path, 'node_moduleselectron_html_path');
 const log                        = console.log;
 
 gulp.task('clearElectronBuildDir', done => {
@@ -37,11 +37,11 @@ gulp.task('copyElectronNodeModules', done => {
 });
 
 gulp.task('copyElectronHtml', done => {
-	gulp.src(path.join(electron_html_path, '**/*'))
+	gulp.src(path.join(electron_html_path, '/**/*'))
 	.on('error', function (err) {
 		gutil.log(gutil.colors.red('[Error]'), err.toString());
 	})
-	.pipe(gulp.dest(path.join(electron_dist_path, '/html/')));
+	.pipe(gulp.dest(path.join(electron_dist_path, '/source/html/')));
 	log(`${chalk.blue('copy electron html successfully !')}${chalk.green(new Date())}`);
 	done();
 });

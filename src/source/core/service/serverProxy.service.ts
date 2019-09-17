@@ -19,6 +19,7 @@ export class ServerProxy {
 
     async send() {
         const url = `${this.remoteAddress}/${this.moduleName}/${this.actionName}`;
+        console.log(url, this.params);
         return await new Http(url, this.params)
             .POST()
             .then((response: any) => {
