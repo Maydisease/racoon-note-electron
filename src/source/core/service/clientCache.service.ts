@@ -4,14 +4,14 @@ import {config} from '../../config';
 
 function ServiceList(dirPath: string, filesList: any = {}) {
     const files = fs.readdirSync(dirPath);
-    files.forEach((itm, index) => {
-        const stat = fs.statSync(path.join(dirPath, itm));
+    files.forEach((item, index) => {
+        const stat = fs.statSync(path.join(dirPath, item));
         if (stat.isDirectory()) {
             //递归读取文件
-            ServiceList(path.join(`${dirPath}${itm}`), filesList);
+            ServiceList(path.join(`${dirPath}${item}`), filesList);
         } else {
-            if (itm.indexOf('.service.') > 0) {
-                const filesPath = path.join(dirPath, itm);
+            if (item.indexOf('.service.') > 0) {
+                const filesPath = path.join(dirPath, item);
                 const service   = (require(filesPath) as any).default;
                 let key         = filesPath.replace(config.MODULE_PATH, '');
                 key             = path.join('/', key.substring(0, key.indexOf('.service.')));

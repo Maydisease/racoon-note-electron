@@ -8,9 +8,9 @@
 		"start:pro": "cross-env NODE_ENV=production electron .",
 		"package:win": "electron-packager ./dist --overwrite --platform=win32 --arch=x64 --out=./build --icon=assets/app-icon/win/app.ico",
 		"package:mac": "electron-packager ./dist --overwrite --platform=darwin --arch=x64 --out=./build --icon=assets/app-icon/mac/app.icns --osx-sign.identity='meidvh' --extend-info=assets/mac/info.plist --darwinDarkModeSupport=true",
-		"build:win": "gulp clear && tsc && gulp writePkg && gulp copyHtml && gulp copyNodeModules && npm run package:win",
+		"build:win": "gulp clear && tsc && gulp writePkg && gulp copyHtml && gulp copyStatics && gulp copyNodeModules && npm run package:win",
 		"build:mac": "bash ./build.mac.sh",
-		"watch": "concurrently \"tsc -w\" \"gulp copyHtml\""
+		"watch": "concurrently \"tsc -w\" \"gulp copyHtml\" \"gulp copyStatics\""
 	},
 	"author": "",
 	"license": "ISC",

@@ -1,26 +1,25 @@
-import url      from 'url';
-import path     from 'path';
-import {config} from "../../config";
-import {utils}  from "../../utils";
+import url                    from 'url';
+import path                   from 'path';
+import {config}               from "../../config";
+import {utils}                from "../../utils";
+import * as systeminformation from "systeminformation";
 
 declare var global: any;
 
 interface PrivateProtocolRequest {
     headers: string,
-    Accept: string,
-    'User-Agent': string,
     method: string,
     referrer: string,
     url: string,
+    path?: string
 }
 
 interface PrivateProtocol {
     headers: string,
-    accept: string,
-    userAgent: string,
     method: string,
     referrer: string,
     url: string,
+    path?: string
 }
 
 class AttachedService {
@@ -35,21 +34,21 @@ class AttachedService {
     public remoteAttachedPath: string | undefined;
 
     constructor() {
+
     }
 
     public async adapter(privateProtocolRequest: PrivateProtocolRequest) {
 
+        const defaultImage          = path.join(config.ROOT_PATH, `statics/images/default_image.png`);
         this.userPrivateSpace       = global.privateSpace;
         this.localAttachedBasePath  = path.join(config.ROOT_PATH, `attached_files/${this.userPrivateSpace}`);
         this.remoteAttachedBasePath = `${config.SERVER.ATTACHED_FILES.HOST}:${config.SERVER.ATTACHED_FILES.PORT}/attached_files/${this.userPrivateSpace}`;
 
         this.privateProtocol = {
             headers  : privateProtocolRequest.headers,
-            accept   : privateProtocolRequest.Accept,
-            userAgent: privateProtocolRequest['User-Agent'],
             method   : privateProtocolRequest.method,
             referrer : privateProtocolRequest.referrer,
-            url      : privateProtocolRequest.url
+            url      : privateProtocolRequest.url,
         };
 
         const urlObj  = url.parse(this.privateProtocol.url);
@@ -60,14 +59,24 @@ class AttachedService {
 
         let newProtocolRequest = {
             url   : '',
-            method: 'GET'
+            method: 'GET',
+            sessionId: null
         };
 
         if (await utils.getFilePathStat(this.localAttachedPath)) {
             newProtocolRequest.url = this.localAttachedPath;
         } else {
             this.remoteAttachedPath = `${<string>this.remoteAttachedBasePath}/img${<string>this.filePath}`;
-            newProtocolRequest.url  = this.remoteAttachedPath;
+            const networkStatus = await systeminformation.inetChecksite(this.remoteAttachedPath);
+
+            switch (networkStatus.status) {
+                case 200:
+                    newProtocolRequest.url = this.remoteAttachedPath;
+                    break;
+                case 404:
+                    newProtocolRequest['url'] = `file://${defaultImage}`;
+                    break;
+            }
         }
 
         return newProtocolRequest
