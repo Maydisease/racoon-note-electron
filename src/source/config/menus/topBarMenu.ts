@@ -1,7 +1,7 @@
-import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
+// import MenuItemConstructorOptions = Electron.MenuItemConstructorOptions;
 
 declare var global: any;
-export const topBarMenuTemplateConf: MenuItemConstructorOptions[] = [
+export const topBarMenuTemplateConf: any = [
     {
         label  : '',
         submenu: [

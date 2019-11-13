@@ -1,6 +1,6 @@
 const gulp                       = require('gulp');
 const path                       = require('path');
-const chalk                      = require('chalk');
+
 const del                        = require('del');
 const fs                         = require('fs');
 const package                    = require('./package.json');
@@ -15,14 +15,14 @@ const log                        = console.log;
 
 gulp.task('clearElectronBuildDir', done => {
 	del([path.join(electron_build_path, '**/*')]).then(paths => {
-		log(`${chalk.blue('clear electron build successfully ! ')}${chalk.green(new Date())}`);
+		log(`clear electron build successfully ! `);
 		done();
 	});
 });
 
 gulp.task('clearElectronDistDir', done => {
 	del([path.join(electron_dist_path, '**/*')]).then(paths => {
-		log(`${chalk.blue('clear electron build successfully ! ')}${chalk.green(new Date())}`);
+		log(`clear electron build successfully ! `);
 		done();
 	});
 });
@@ -33,7 +33,7 @@ gulp.task('copyElectronNodeModules', done => {
 		gutil.log(gutil.colors.red('[Error]'), err.toString());
 	})
 	.pipe(gulp.dest(path.join(electron_dist_path, '/node_modules/')));
-	log(`${chalk.blue('copy electron note modules successfully !')}${chalk.green(new Date())}`);
+	log(`copy electron note modules successfully !`);
 	done();
 });
 
@@ -43,7 +43,7 @@ gulp.task('copyElectronHtml', done => {
 		gutil.log(gutil.colors.red('[Error]'), err.toString());
 	})
 	.pipe(gulp.dest(path.join(electron_dist_path, '/source/html/')));
-	log(`${chalk.blue('copy electron html successfully !')}${chalk.green(new Date())}`);
+	log(`copy electron html successfully !`);
 	done();
 });
 
@@ -53,7 +53,7 @@ gulp.task('copyElectronStatics', done => {
 		gutil.log(gutil.colors.red('[Error]'), err.toString());
 	})
 	.pipe(gulp.dest(path.join(electron_dist_path, '/source/statics/')));
-	log(`${chalk.blue('copy electron statics successfully !')}${chalk.green(new Date())}`);
+	log(`copy electron statics successfully !`);
 	done();
 });
 
