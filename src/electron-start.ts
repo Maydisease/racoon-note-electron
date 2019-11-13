@@ -9,6 +9,8 @@ import path                                                                     
 import fs                                                                         from "fs";
 import * as systeminformation                                                     from 'systeminformation';
 
+fs.writeFileSync(path.join(__dirname, './startLogs'), JSON.stringify({type: 'start'}));
+
 declare var global: {
     isValidToken: boolean,
     privateSpace: string,
@@ -53,8 +55,15 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 
 const appReadyInit = async () => {
 
+    fs.writeFileSync(path.join(__dirname, './initLogs'), JSON.stringify({type: 'init'}));
+
     // 获取当前网络状态
     const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);
+
+
+    fs.writeFileSync(path.join(__dirname, './runLogs'), JSON.stringify(networkStatus));
+
+    console.log('networkStatus:', networkStatus);
 
     if (networkStatus.status !== 200) {
         if (statusWindow && statusWindow.isVisible()) {
@@ -174,8 +183,10 @@ global.service = {
         app.exit(0);
     },
     SignOut          : async () => {
+        console.log(111111112111111);
         const validToken = await ClientCache('/user/signState').removeSignState();
         if (typeof validToken.raw === 'object' && validToken.raw.length === 0) {
+            console.log(111111110111111);
             global.service.AppReset();
         }
     },

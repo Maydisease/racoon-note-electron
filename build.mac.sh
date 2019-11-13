@@ -10,4 +10,4 @@ gulp writePkg
 sleep 1s
 npm run package:mac
 sleep 1s
-# cp -rf node_modules ./build/note-darwin-x64/note.app/Contents/Resources/app/node_modules
+python ./quickpkg ./build/racoon-darwin-x64/racoon.app --output ./build/racoon-darwin-x64/racoon.pkg
