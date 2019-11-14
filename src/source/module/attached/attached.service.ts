@@ -29,12 +29,12 @@ class AttachedService {
     public filePath: string | undefined;
     public userPrivateSpace: string | undefined;
     public localAttachedBasePath: string | undefined;
-    public localAttachedPath: string | undefined;
+    public localAttachedPath: string;
     public remoteAttachedBasePath: string | undefined;
     public remoteAttachedPath: string | undefined;
 
     constructor() {
-
+        this.localAttachedPath = '';
     }
 
     public async adapter(privateProtocolRequest: PrivateProtocolRequest) {
@@ -45,10 +45,10 @@ class AttachedService {
         this.remoteAttachedBasePath = `${config.SERVER.ATTACHED_FILES.HOST}:${config.SERVER.ATTACHED_FILES.PORT}/attached_files/${this.userPrivateSpace}`;
 
         this.privateProtocol = {
-            headers  : privateProtocolRequest.headers,
-            method   : privateProtocolRequest.method,
-            referrer : privateProtocolRequest.referrer,
-            url      : privateProtocolRequest.url,
+            headers : privateProtocolRequest.headers,
+            method  : privateProtocolRequest.method,
+            referrer: privateProtocolRequest.referrer,
+            url     : privateProtocolRequest.url,
         };
 
         const urlObj  = url.parse(this.privateProtocol.url);
@@ -58,8 +58,8 @@ class AttachedService {
         this.localAttachedPath = path.join(this.localAttachedBasePath, `${<string>this.fileType}/${this.filePath}`);
 
         let newProtocolRequest = {
-            url   : '',
-            method: 'GET',
+            url      : '',
+            method   : 'GET',
             sessionId: null
         };
 
@@ -67,7 +67,9 @@ class AttachedService {
             newProtocolRequest.url = this.localAttachedPath;
         } else {
             this.remoteAttachedPath = `${<string>this.remoteAttachedBasePath}/img${<string>this.filePath}`;
-            const networkStatus = await systeminformation.inetChecksite(this.remoteAttachedPath);
+            const networkStatus     = await systeminformation.inetChecksite(this.remoteAttachedPath);
+
+            console.log(2222, networkStatus.status);
 
             switch (networkStatus.status) {
                 case 200:

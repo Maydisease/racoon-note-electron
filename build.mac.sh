@@ -10,4 +10,5 @@ gulp writePkg
 sleep 1s
 npm run package:mac
 sleep 1s
-python ./quickpkg ./build/racoon-darwin-x64/racoon.app --output ./build/racoon-darwin-x64/racoon.pkg
+
+# npx electron-builder build --mac

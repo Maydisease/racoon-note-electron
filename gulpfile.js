@@ -1,5 +1,5 @@
-const gulp                       = require('gulp');
-const path                       = require('path');
+const gulp = require('gulp');
+const path = require('path');
 
 const del                        = require('del');
 const fs                         = require('fs');
@@ -9,7 +9,7 @@ const electron_src_path          = path.join(__dirname);
 const electron_dist_path         = path.join(electron_src_path, 'dist');
 const electron_build_path        = path.join(electron_src_path, 'build');
 const electron_html_path         = path.join(electron_src_path, 'src/source/html');
-const electron_statics_path         = path.join(electron_src_path, 'src/source/statics');
+const electron_statics_path      = path.join(electron_src_path, 'src/source/statics');
 const electron_node_modules_path = path.join(electron_src_path, 'node_moduleselectron_html_path');
 const log                        = console.log;
 
@@ -60,6 +60,10 @@ gulp.task('copyElectronStatics', done => {
 gulp.task('writeElectronRunPack', done => {
 	const content = {
 		main: 'electron-start.js',
+		author: 'medivh',
+		version: '1.0.1',
+		description: 'A powerful and simple note based on markdown soft.',
+		name: 'racoon',
 		dependencies: package.dependencies
 	};
 	fs.writeFile(path.join(electron_dist_path, '/package.json'), JSON.stringify(content), () => {

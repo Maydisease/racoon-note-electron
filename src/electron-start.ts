@@ -1,15 +1,13 @@
-import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray}   from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload, GetUrlHeader} from './source/service';
-import {config}                                                                   from './source/config';
-import {createdWindow}                                                            from './source/core/service/createdWindow.service';
-import {WindowManages}                                                            from "./source/core/window_manages";
-import {topBarMenuTemplateConf}                                                   from "./source/config/menus/topBarMenu";
-import {trayMenuTemplateConf}                                                     from "./source/config/menus/trayMenu";
-import path                                                                       from "path";
-import fs                                                                         from "fs";
-import * as systeminformation                                                     from 'systeminformation';
-
-fs.writeFileSync(path.join(__dirname, './startLogs'), JSON.stringify({type: 'start'}));
+import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray, session} from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload, GetUrlHeader}        from './source/service';
+import {config}                                                                          from './source/config';
+import {createdWindow}                                                                   from './source/core/service/createdWindow.service';
+import {WindowManages}                                                                   from "./source/core/window_manages";
+import {topBarMenuTemplateConf}                                                          from "./source/config/menus/topBarMenu";
+import {trayMenuTemplateConf}                                                            from "./source/config/menus/trayMenu";
+import path                                                                              from "path";
+import fs                                                                                from "fs";
+import * as systeminformation                                                            from 'systeminformation';
 
 declare var global: {
     isValidToken: boolean,
@@ -55,15 +53,8 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 
 const appReadyInit = async () => {
 
-    fs.writeFileSync(path.join(__dirname, './initLogs'), JSON.stringify({type: 'init'}));
-
     // 获取当前网络状态
     const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);
-
-
-    fs.writeFileSync(path.join(__dirname, './runLogs'), JSON.stringify(networkStatus));
-
-    console.log('networkStatus:', networkStatus);
 
     if (networkStatus.status !== 200) {
         if (statusWindow && statusWindow.isVisible()) {
@@ -121,6 +112,7 @@ const appReadyInit = async () => {
         const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
         callback(newProtocolRequest)
     });
+
 };
 
 
@@ -183,10 +175,8 @@ global.service = {
         app.exit(0);
     },
     SignOut          : async () => {
-        console.log(111111112111111);
         const validToken = await ClientCache('/user/signState').removeSignState();
         if (typeof validToken.raw === 'object' && validToken.raw.length === 0) {
-            console.log(111111110111111);
             global.service.AppReset();
         }
     },
