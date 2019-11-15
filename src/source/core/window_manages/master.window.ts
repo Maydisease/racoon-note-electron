@@ -47,8 +47,8 @@ export class MasterWindow {
             this.win.once('ready-to-show', () => {
                 (this.win as BrowserWindow).show();
                 global.browserWindowList[this.winHash] = this.win;
-                (this.win as BrowserWindow).webContents.openDevTools();
-                // this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+                // (this.win as BrowserWindow).webContents.openDevTools();
+                this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
                 resolve(this.win);
             });
 
