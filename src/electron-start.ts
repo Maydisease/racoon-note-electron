@@ -9,6 +9,31 @@ import path                                                                     
 import fs                                                                                        from "fs";
 import * as systeminformation                                                                    from 'systeminformation';
 
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme    : 'racoon',
+        privileges:
+            {
+                standard           : true,
+                bypassCSP          : true,
+                corsEnabled        : true,
+                allowServiceWorkers: true,
+                supportFetchAPI    : true,
+            }
+    },
+    {
+        scheme    : 'resource',
+        privileges:
+            {
+                standard           : true,
+                bypassCSP          : true,
+                corsEnabled        : true,
+                allowServiceWorkers: true,
+                supportFetchAPI    : true,
+            }
+    }
+]);
+
 declare var global: {
     isValidToken: boolean,
     privateSpace: string,
@@ -64,6 +89,12 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 });
 
 const appReadyInit = async () => {
+
+    // 注册私有协议
+    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
+        const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
+        callback(newProtocolRequest)
+    });
 
     SystemBootLog.put('app ready init...');
     bootMonitorWindow = await new WindowManages.bootMonitor(true).created();
@@ -129,12 +160,6 @@ const appReadyInit = async () => {
     tray.on('double-click', () => {
         global.service.browserWindowList()['master'].show();
         global.service.browserWindowList()['master'].focus();
-    });
-
-    // 注册私有协议
-    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
-        const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
-        callback(newProtocolRequest)
     });
 
     const bootMonitorWin = global.browserWindowList['bootMonitor'];
@@ -206,13 +231,15 @@ global.service = {
             global.service.AppReset();
         }
     },
-    SelectFiles      : (parentWin: BrowserWindow, options: object) => {
+
+    SelectFiles: (parentWin: BrowserWindow, options: object) => {
         return new Promise((resolve, reject) => {
             const parentWin = global.browserWindowList['master'];
-            (dialog as any).showOpenDialog(parentWin, options, (files: string[] | undefined): void => {
-                if (files) {
+            dialog.showOpenDialog(parentWin, options).then((response) => {
+                const {filePaths} = response;
+                if (filePaths) {
                     const data: any = [];
-                    files.forEach(async (file: string, index: number) => {
+                    filePaths.forEach(async (file: string, index: number) => {
                         const filePostfix    = path.extname(file);
                         const fileName       = path.basename(file);
                         const stat: fs.Stats = fs.statSync(file);
@@ -227,5 +254,6 @@ global.service = {
             });
         });
     },
-    localDbCache     : {}
+
+    localDbCache: {}
 };

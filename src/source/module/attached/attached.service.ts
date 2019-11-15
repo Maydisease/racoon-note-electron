@@ -69,8 +69,6 @@ class AttachedService {
             this.remoteAttachedPath = `${<string>this.remoteAttachedBasePath}/img${<string>this.filePath}`;
             const networkStatus     = await systeminformation.inetChecksite(this.remoteAttachedPath);
 
-            console.log(2222, networkStatus.status);
-
             switch (networkStatus.status) {
                 case 200:
                     newProtocolRequest.url = this.remoteAttachedPath;
@@ -80,7 +78,6 @@ class AttachedService {
                     break;
             }
         }
-
         return newProtocolRequest
 
     }
