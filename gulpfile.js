@@ -63,7 +63,7 @@ gulp.task('writeElectronRunPack', done => {
 		author: 'medivh',
 		version: '1.0.1',
 		description: 'A powerful and simple note based on markdown soft.',
-		name: 'racoon',
+		name: package.name,
 		dependencies: package.dependencies
 	};
 	fs.writeFile(path.join(electron_dist_path, '/package.json'), JSON.stringify(content), () => {

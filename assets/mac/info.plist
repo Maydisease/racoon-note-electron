@@ -9,10 +9,10 @@
       <false />
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>electron-api-demos</string>
+        <string>Racoon Application</string>
       </array>
       <key>CFBundleURLName</key>
-      <string>Electron API Demos Protocol</string>
+      <string>Racoon Application</string>
     </dict>
   </array>
   <key>ElectronTeamID</key>

@@ -1,5 +1,5 @@
 {
-	"name": "racoon",
+	"name": "Racoon",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./dist/electron-start.js",
