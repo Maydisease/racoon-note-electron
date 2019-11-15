@@ -1,7 +1,6 @@
 import {app, BrowserWindow}   from 'electron';
 import {config}               from "../../config";
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
-// import {ChromeExtensionsLoad} from "../../chrome_extensions";
 
 declare var global: any;
 

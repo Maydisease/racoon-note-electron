@@ -91,11 +91,15 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 const appReadyInit = async () => {
 
     // 注册私有协议
-    protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
-        console.log(protocolRequest);
+    protocol.registerFileProtocol('racoon', async (protocolRequest, callback) => {
         const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
         callback(newProtocolRequest)
     });
+
+    // 注册私有协议
+    // protocol.registerFileProtocol('resource', async (protocolRequest, callback) => {
+    //     callback({path: '/Users/tandongs/Work/my/racoon/electron/src/main.6d62cbbc.js'});
+    // });
 
     SystemBootLog.put('app ready init...');
     bootMonitorWindow = await new WindowManages.bootMonitor(true).created();
