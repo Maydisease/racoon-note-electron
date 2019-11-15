@@ -1,34 +1,46 @@
-import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray, session} from 'electron';
-import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload, GetUrlHeader}        from './source/service';
-import {config}                                                                          from './source/config';
-import {createdWindow}                                                                   from './source/core/service/createdWindow.service';
-import {WindowManages}                                                                   from "./source/core/window_manages";
-import {topBarMenuTemplateConf}                                                          from "./source/config/menus/topBarMenu";
-import {trayMenuTemplateConf}                                                            from "./source/config/menus/trayMenu";
-import path                                                                              from "path";
-import fs                                                                                from "fs";
-import * as systeminformation                                                            from 'systeminformation';
+import {app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, protocol, Tray, session}         from 'electron';
+import {ClientCache, CurrentWindow, ServerProxy, ServerProxyUpload, GetUrlHeader, SystemBootLog} from './source/service';
+import {config}                                                                                  from './source/config';
+import {createdWindow}                                                                           from './source/core/service/createdWindow.service';
+import {WindowManages}                                                                           from "./source/core/window_manages";
+import {topBarMenuTemplateConf}                                                                  from "./source/config/menus/topBarMenu";
+import {trayMenuTemplateConf}                                                                    from "./source/config/menus/trayMenu";
+import path                                                                                      from "path";
+import fs                                                                                        from "fs";
+import * as systeminformation                                                                    from 'systeminformation';
 
 declare var global: {
     isValidToken: boolean,
     privateSpace: string,
-    browserWindowList: any
+    browserWindowList: {
+        [key: string]: BrowserWindow
+    }
     isTrueClose: boolean,
-    service: any
+    service: any,
+    systemBoot: {
+        logs: any[]
+    }
 };
 
 global.isValidToken      = false;
 global.privateSpace      = '';
 global.browserWindowList = {};
 global.isTrueClose       = false;
+global.systemBoot        = {
+    logs: [
+        {name: 'boot start...', time: new Date().getTime()}
+    ]
+};
 
 ipcMain.on('getBrowserWindowList', (event: any) => {
     event.returnValue = global.browserWindowList;
 });
 
-let masterWindow: BrowserWindow;
-let signWindow: BrowserWindow;
-let statusWindow: BrowserWindow;
+let masterWindow: BrowserWindow | null;
+let signWindow: BrowserWindow | null;
+let statusWindow: BrowserWindow | null;
+let networkMonitorWindow: BrowserWindow | null;
+let bootMonitorWindow: BrowserWindow | null;
 let topBarMenu: Menu;
 let tray: Tray;
 let trayMenu: Menu;
@@ -53,8 +65,15 @@ app.on('second-instance', (event, commandLine, workingDirectory) => {
 
 const appReadyInit = async () => {
 
+    SystemBootLog.put('app ready init...');
+    bootMonitorWindow = await new WindowManages.bootMonitor(true).created();
+    SystemBootLog.put('create boot monitor window...');
+    networkMonitorWindow = await new WindowManages.networkMonitor(true).created();
+    SystemBootLog.put('create netWork monitor window...');
+
     // 获取当前网络状态
     const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);
+    SystemBootLog.put('test network state...');
 
     if (networkStatus.status !== 200) {
         if (statusWindow && statusWindow.isVisible()) {
@@ -71,8 +90,10 @@ const appReadyInit = async () => {
 
     // 判断当前登陆状态
     const localCacheSignStateInfo = await ClientCache('/user/signState').getSignState();
+    SystemBootLog.put('check local sign state...');
     if (localCacheSignStateInfo && localCacheSignStateInfo.token && localCacheSignStateInfo.token !== '') {
-        const validToken    = await new ServerProxy('User', 'verifySignState').send();
+        const validToken = await new ServerProxy('User', 'verifySignState').send();
+        SystemBootLog.put('check remote sign state...');
         global.isValidToken = validToken.result === 0;
         global.privateSpace = localCacheSignStateInfo.private_space;
     } else {
@@ -82,13 +103,16 @@ const appReadyInit = async () => {
     // 如果验证没有通过
     if (!global.isValidToken) {
         // 创建主窗口
-        masterWindow = new WindowManages.master(null, true).created();
+        masterWindow = await new WindowManages.master(null, true).created();
+        SystemBootLog.put('create master default window...');
         // 创建登陆窗口
-        signWindow   = new WindowManages.sign(true, masterWindow).created();
+        signWindow = await new WindowManages.sign(true, masterWindow as BrowserWindow).created();
+        SystemBootLog.put('create sign window...');
     }
     // 如果验证通过了
     else {
-        masterWindow = new WindowManages.master('note', true).created();
+        masterWindow = await new WindowManages.master('note', true).created();
+        SystemBootLog.put('create master note window...');
     }
 
     // 置空topMenu
@@ -113,8 +137,10 @@ const appReadyInit = async () => {
         callback(newProtocolRequest)
     });
 
-};
+    const bootMonitorWin = global.browserWindowList['bootMonitor'];
+    bootMonitorWin.webContents.send('bootLogs', SystemBootLog.get());
 
+};
 
 app.on('ready', async () => {
     await appReadyInit();

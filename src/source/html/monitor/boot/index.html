@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>boot monitor</title>
+    <script>
+		const electron    = require('electron');
+		const ipcRenderer = electron.ipcRenderer;
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 设置滚动条的样式 */
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 5px;
+        }
+
+        /* 滚动槽 */
+        ::-webkit-scrollbar-track {
+
+        }
+
+        /* 滚动条滑块 */
+        ::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background: RGBA(255, 255, 255, .2);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #999;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table thead tr th {
+            color: #CCC;
+        }
+
+        table thead tr th,
+        table tbody tr td {
+            text-align: left;
+            padding: 3px 10px;
+            border: none;
+            box-sizing: border-box;
+            border-bottom: 1px solid #333;
+        }
+
+        table tbody tr:last-child {
+            animation: insert-anime .2s forwards;
+        }
+
+        @keyframes insert-anime {
+            from {
+                background: RGBA(0, 71, 115, 1);
+            }
+            to {
+                background: RGBA(0, 71, 115, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+<table id="network-monitor" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>use time</th>
+        <th>time</th>
+        <th>type</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+
+	const generateData = (name, useTime, date, type) => {
+
+		const trElement      = document.createElement('tr');
+		const td1Element     = document.createElement('td');
+		const td2Element     = document.createElement('td');
+		const td3Element     = document.createElement('td');
+		const td4Element     = document.createElement('td');
+		td1Element.innerText = name;
+		td2Element.innerText = useTime + ' ms';
+		td3Element.innerText = date;
+		td4Element.innerText = type;
+
+		trElement.appendChild(td1Element);
+		trElement.appendChild(td2Element);
+		trElement.appendChild(td3Element);
+		trElement.appendChild(td4Element);
+
+		return trElement;
+	};
+
+	const networkMonitorElement = document.getElementById('network-monitor');
+	const dataContainer         = networkMonitorElement.querySelector('tbody');
+	ipcRenderer.on('bootLogs', (event, response) => {
+
+		const bootTaskList = response;
+		const fragment     = document.createDocumentFragment();
+
+		bootTaskList.map((item, index) => {
+			const {name, time, type} = item;
+			const _date               = new Date(time);
+			const date                = `${_date.getHours().toString()}:${_date.getMinutes().toString()}'${_date.getSeconds().toString()}`;
+			const useTime             = (index === 0 ? 0 : time - bootTaskList[index - 1].time) || 0;
+			const dataElement         = generateData(name, useTime, date, type);
+			fragment.appendChild(dataElement);
+		});
+
+		dataContainer.appendChild(fragment);
+		document.querySelector('html').scrollTop = 999999;
+
+//		const dataCount = dataContainer.querySelectorAll('tr').length;
+//		console.log(dataCount);
+//		if (dataCount > 50) {
+//			dataContainer.removeChild(dataContainer.querySelector('tr'));
+//		}
+//
+//		const {path, startTime, endTime, status} = response;
+//		const useTime                            = endTime - startTime;
+//		const dataElement                        = generateData(path, useTime, status);
+//		dataContainer.appendChild(dataElement);
+//
+//		document.querySelector('html').scrollTop = 999999;
+	});
+</script>
+</body>
+</html>

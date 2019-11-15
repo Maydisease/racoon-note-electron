@@ -1,5 +1,8 @@
-import {Http}   from './http.service';
-import {config} from '../../config';
+import {Http}              from './http.service';
+import {config}            from '../../config';
+import {NetworkLogService} from './networkLog.service';
+
+declare var global: any;
 
 export class ServerProxy {
 
@@ -18,13 +21,18 @@ export class ServerProxy {
     }
 
     async send() {
-        const url = `${this.remoteAddress}/${this.moduleName}/${this.actionName}`;
+        const path      = `/${this.moduleName}/${this.actionName}`;
+        const url       = `${this.remoteAddress}${path}`;
+        const startTime = new Date().getTime();
+
         return await new Http(url, this.params)
             .POST()
             .then((response: any) => {
+                NetworkLogService(path, startTime, this.params, true);
                 return response;
             })
             .catch((err: Error) => {
+                NetworkLogService(path, startTime, this.params, false);
                 return {result: 1, err}
             })
     }

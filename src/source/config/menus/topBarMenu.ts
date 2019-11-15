@@ -86,5 +86,26 @@ export const topBarMenuTemplateConf: any = [
                 }
             },
         ]
+    },
+    {
+        label  : 'Tools',
+        submenu: [
+            {
+                label      : 'Boot Monitor',
+                accelerator: 'CmdOrCtrl+Shift+B',
+                click      : () => {
+                    const bootMonitorWindow = global.browserWindowList['bootMonitor'];
+                    bootMonitorWindow.show();
+                }
+            },
+            {
+                label      : 'Network Monitor',
+                accelerator: 'CmdOrCtrl+Shift+N',
+                click      : () => {
+                    const networkMonitorWindow = global.browserWindowList['networkMonitor'];
+                    networkMonitorWindow.show();
+                }
+            }
+        ]
     }
 ];

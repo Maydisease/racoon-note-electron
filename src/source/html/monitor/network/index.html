@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>network monitor</title>
+    <script>
+		const electron    = require('electron');
+		const ipcRenderer = electron.ipcRenderer;
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 设置滚动条的样式 */
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 5px;
+        }
+
+        /* 滚动槽 */
+        ::-webkit-scrollbar-track {
+
+        }
+
+        /* 滚动条滑块 */
+        ::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background: RGBA(255, 255, 255, .2);
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #999;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table thead tr th {
+            color: #CCC;
+        }
+
+        table thead tr th,
+        table tbody tr td {
+            text-align: left;
+            padding: 3px 10px;
+            border: none;
+            box-sizing: border-box;
+            border-bottom: 1px solid #333;
+        }
+
+        table tbody tr:last-child {
+            animation: insert-anime .2s forwards;
+        }
+
+        @keyframes insert-anime {
+            from {
+                background: RGBA(0, 71, 115, 1);
+            }
+            to {
+                background: RGBA(0, 71, 115, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+<table id="network-monitor" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+        <th>path</th>
+        <th>use time</th>
+        <th>type</th>
+        <th>status</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<script>
+
+	const generateData = (path, useTime, status, isCache) => {
+
+		const trElement      = document.createElement('tr');
+		const td1Element     = document.createElement('td');
+		const td2Element     = document.createElement('td');
+		const td3Element     = document.createElement('td');
+		const td4Element     = document.createElement('td');
+		td1Element.innerText = path;
+		td2Element.innerText = useTime + ' ms';
+		td3Element.innerText = isCache ? 'cache' : 'fresh';
+		td4Element.innerText = status;
+
+		trElement.appendChild(td1Element);
+		trElement.appendChild(td2Element);
+		trElement.appendChild(td3Element);
+		trElement.appendChild(td4Element);
+
+		return trElement;
+	};
+
+	const networkMonitorElement = document.getElementById('network-monitor');
+	const dataContainer         = networkMonitorElement.querySelector('tbody');
+	ipcRenderer.on('httpLogs', (event, response) => {
+		const dataCount = dataContainer.querySelectorAll('tr').length;
+		if (dataCount > 50) {
+			dataContainer.removeChild(dataContainer.querySelector('tr'));
+		}
+
+		const {path, startTime, endTime, status, isCache} = response;
+		const useTime                                     = endTime - startTime;
+		const dataElement                                 = generateData(path, useTime, status, isCache);
+		dataContainer.appendChild(dataElement);
+		document.querySelector('html').scrollTop = 999999;
+	});
+</script>
+</body>
+</html>

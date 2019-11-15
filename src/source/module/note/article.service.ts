@@ -1,4 +1,5 @@
-import {ArticleModel} from './article.model';
+import {ArticleModel}      from './article.model';
+import {NetworkLogService} from "../../service";
 
 interface ArticleUpdateParams {
     _id?: number,
@@ -36,17 +37,26 @@ class articleService {
 
     // 获取文章详情
     public async getArticle(id: number) {
-        return await this.articleModel.getArticle(id);
+        const time     = new Date().getTime();
+        const response = await this.articleModel.getArticle(id);
+        NetworkLogService('/note/getArticle', time, {id}, true, true);
+        return response
     }
 
     // 更新文章详情
     public async updateArticle(id: number, params: ArticleUpdateParams) {
-        return await this.articleModel.updateArticle(id, params);
+        const time     = new Date().getTime();
+        const response = await this.articleModel.updateArticle(id, params);
+        NetworkLogService('/note/updateArticle', time, {id, ...params}, true, true);
+        return response
     }
 
     // 添加文章
     public async addArticle(params: ArticleAddParams) {
-        return await this.articleModel.addArticle(params);
+        const time     = new Date().getTime();
+        const response = await this.articleModel.addArticle(params);
+        NetworkLogService('/note/addArticle', time, params, true, true);
+        return response;
     }
 
 }

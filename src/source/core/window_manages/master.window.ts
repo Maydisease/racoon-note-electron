@@ -37,29 +37,31 @@ export class MasterWindow {
         this.onDevTools  = OnDevTools;
     }
 
-    public created(): BrowserWindow {
+    public created(): Promise<BrowserWindow | null> {
 
-        this.win = new BrowserWindow(this.option);
+        return new Promise((resolve, reject) => {
 
-        this.win.loadURL(this.pageLoadURL);
-        this.win.once('ready-to-show', () => {
-            (this.win as BrowserWindow).show();
-            global.browserWindowList[this.winHash] = this.win;
-            (this.win as BrowserWindow).webContents.openDevTools();
-            // this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+            this.win = new BrowserWindow(this.option);
+
+            this.win.loadURL(this.pageLoadURL);
+            this.win.once('ready-to-show', () => {
+                (this.win as BrowserWindow).show();
+                global.browserWindowList[this.winHash] = this.win;
+                // (this.win as BrowserWindow).webContents.openDevTools();
+                this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+                resolve(this.win);
+            });
+
+            this.win.on('close', (e) => {
+                if (!global.isTrueClose) {
+                    (this.win as BrowserWindow).hide();
+                    e.preventDefault();
+                } else {
+                    app.exit();
+                }
+            });
+
         });
-
-        this.win.on('close', (e) => {
-            if (!global.isTrueClose) {
-                (this.win as BrowserWindow).hide();
-                e.preventDefault();
-            } else {
-                app.exit();
-            }
-        });
-
-        return this.win;
-
     }
 
     public getWin() {

@@ -43,26 +43,28 @@ export class SignWindow {
         this.onDevTools  = OnDevTools;
     }
 
-    public created(): BrowserWindow {
-        this.option.parent = this.parentWin;
-        this.win           = new BrowserWindow(this.option);
+    public created(): Promise<BrowserWindow | null> {
 
-        this.win.loadURL(this.pageLoadURL);
+        return new Promise((resolve, reject) => {
+            this.option.parent = this.parentWin;
+            this.win           = new BrowserWindow(this.option);
 
-        this.win.once('ready-to-show', () => {
-            (this.win as BrowserWindow).show();
-            global.browserWindowList[this.winHash] = this.win;
-            this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+            this.win.loadURL(this.pageLoadURL);
+
+            this.win.once('ready-to-show', () => {
+                (this.win as BrowserWindow).show();
+                global.browserWindowList[this.winHash] = this.win;
+                this.onDevTools && config.ENV === 'development' && (this.win as BrowserWindow).webContents.openDevTools() && ChromeExtensionsLoad();
+                resolve(this.win);
+            });
+
+            const position = this.win.getPosition();
+            this.win.setPosition(position[0] + 400, position[1] - 50);
+
+            this.win.on('close', (e) => {
+                this.destroy();
+            });
         });
-
-        const position = this.win.getPosition();
-        this.win.setPosition(position[0] + 400, position[1] - 50);
-
-        this.win.on('close', (e) => {
-            this.destroy();
-        });
-
-        return this.win;
 
     }
 

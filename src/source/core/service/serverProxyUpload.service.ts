@@ -1,6 +1,7 @@
-import {Http}   from './http.service';
-import {config} from '../../config';
-import fs       from 'fs';
+import {Http}              from './http.service';
+import {config}            from '../../config';
+import fs                  from 'fs';
+import {NetworkLogService} from "./networkLog.service";
 
 export class ServerProxyUpload {
 
@@ -28,10 +29,20 @@ export class ServerProxyUpload {
     }
 
     async send() {
-        const url = `${this.remoteAddress}/${this.moduleName}/${this.actionName}`;
+        const path = `/${this.moduleName}/${this.actionName}`;
+        const url  = `${this.remoteAddress}${path}`;
+        const time = new Date().getTime();
+
+        // NetworkLogService
         return await new Http(url, this.params, this.headers)
             .POST()
-            .then((response: any) => response)
-            .catch((err: Error) => ({result: 1, err}))
+            .then((response: any) => {
+                NetworkLogService(path, time, this.params, true);
+                return response
+            })
+            .catch((err: Error) => {
+                NetworkLogService(path, time, this.params, false);
+                return {result: 1, err};
+            })
     }
 }
