@@ -71,10 +71,11 @@
 <table id="network-monitor" cellspacing="0" cellpadding="0">
     <thead>
     <tr>
-        <th>name</th>
-        <th>use time</th>
-        <th>time</th>
-        <th>type</th>
+        <th>NO.</th>
+        <th>Name</th>
+        <th>Use Time</th>
+        <th>Date</th>
+        <th>Type</th>
     </tr>
     </thead>
     <tbody>
@@ -82,18 +83,24 @@
 </table>
 <script>
 
+	let logIndex       = 0;
 	const generateData = (name, useTime, date, type) => {
 
+		logIndex++;
+
 		const trElement      = document.createElement('tr');
+		const td0Element     = document.createElement('td');
 		const td1Element     = document.createElement('td');
 		const td2Element     = document.createElement('td');
 		const td3Element     = document.createElement('td');
 		const td4Element     = document.createElement('td');
+		td0Element.innerText = logIndex;
 		td1Element.innerText = name;
 		td2Element.innerText = useTime + ' ms';
 		td3Element.innerText = date;
 		td4Element.innerText = type;
 
+		trElement.appendChild(td0Element);
 		trElement.appendChild(td1Element);
 		trElement.appendChild(td2Element);
 		trElement.appendChild(td3Element);
@@ -111,10 +118,10 @@
 
 		bootTaskList.map((item, index) => {
 			const {name, time, type} = item;
-			const _date               = new Date(time);
-			const date                = `${_date.getHours().toString()}:${_date.getMinutes().toString()}'${_date.getSeconds().toString()}`;
-			const useTime             = (index === 0 ? 0 : time - bootTaskList[index - 1].time) || 0;
-			const dataElement         = generateData(name, useTime, date, type);
+			const _date              = new Date(time);
+			const date               = `${_date.getHours().toString()}:${_date.getMinutes().toString()}'${_date.getSeconds().toString()}`;
+			const useTime            = (index === 0 ? 0 : time - bootTaskList[index - 1].time) || 0;
+			const dataElement        = generateData(name, useTime, date, type);
 			fragment.appendChild(dataElement);
 		});
 

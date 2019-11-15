@@ -71,10 +71,11 @@
 <table id="network-monitor" cellspacing="0" cellpadding="0">
     <thead>
     <tr>
-        <th>path</th>
-        <th>use time</th>
-        <th>type</th>
-        <th>status</th>
+        <th>NO.</th>
+        <th>Path</th>
+        <th>Use Time</th>
+        <th>Type</th>
+        <th>Status</th>
     </tr>
     </thead>
     <tbody>
@@ -82,18 +83,24 @@
 </table>
 <script>
 
+	let logIndex       = 0;
 	const generateData = (path, useTime, status, isCache) => {
 
+		logIndex++;
+
 		const trElement      = document.createElement('tr');
+		const td0Element     = document.createElement('td');
 		const td1Element     = document.createElement('td');
 		const td2Element     = document.createElement('td');
 		const td3Element     = document.createElement('td');
 		const td4Element     = document.createElement('td');
+		td0Element.innerText = logIndex;
 		td1Element.innerText = path;
 		td2Element.innerText = useTime + ' ms';
 		td3Element.innerText = isCache ? 'cache' : 'fresh';
 		td4Element.innerText = status;
 
+		trElement.appendChild(td0Element);
 		trElement.appendChild(td1Element);
 		trElement.appendChild(td2Element);
 		trElement.appendChild(td3Element);
