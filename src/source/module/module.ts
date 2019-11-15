@@ -9,7 +9,7 @@ const connection: any = createConnection({
     database   : config.DB.PATH,
     entities   : [SignStateEntity, articleEntity],
     synchronize: true,
-    logging    : true
+    logging    : config.ENV === 'development'
 });
 
 class Module {

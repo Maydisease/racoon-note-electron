@@ -77,18 +77,18 @@ class AttachedService {
         this.userPrivateSpace       = global.privateSpace;
         this.remoteAttachedBasePath = `${config.SERVER.ATTACHED_FILES.HOST}:${config.SERVER.ATTACHED_FILES.PORT}/attached_files/${this.userPrivateSpace}`;
         this.remoteAttachedFile     = `${this.remoteAttachedBasePath}/img${this.filePathname}`;
+        this.cacheAttachedPath      = path.join(config.CACHE_PATH, `attached/${this.userPrivateSpace}/img`);
         const cacheFileAddress      = path.join(this.cacheAttachedPath, this.filePathname);
         const time                  = new Date().getTime();
 
         // 如果有本地有该附件的缓存的话
         if (await utils.getFilePathStat(cacheFileAddress)) {
-            newProtocolRequest.url = cacheFileAddress;
+            newProtocolRequest.url = `file://${cacheFileAddress}`;
             NetworkLogService(this.fileHref, time, {}, true, true)
         }
         // 如果本地没有该附件的缓存的话
         else {
             const networkStatus = await systeminformation.inetChecksite(this.remoteAttachedFile);
-            console.log(111111, networkStatus, privateProtocolRequest, defaultImage);
             switch (networkStatus.status) {
                 case 200:
                     // 将远程地址设置为url并返回
