@@ -92,6 +92,7 @@ const appReadyInit = async () => {
 
     // 注册私有协议
     protocol.registerHttpProtocol('racoon', async (protocolRequest, callback) => {
+        console.log(protocolRequest);
         const newProtocolRequest = await ClientCache('/attached/attached').adapter(protocolRequest);
         callback(newProtocolRequest)
     });

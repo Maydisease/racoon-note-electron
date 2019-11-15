@@ -1,7 +1,10 @@
 import url                    from 'url';
 import path                   from 'path';
+import fs                     from 'fs';
+import request                from 'request';
 import {config}               from "../../config";
 import {utils}                from "../../utils";
+import {NetworkLogService}    from "../../service";
 import * as systeminformation from "systeminformation";
 
 declare var global: any;
@@ -26,59 +29,82 @@ class AttachedService {
 
     public privateProtocol: PrivateProtocol | undefined;
     public fileType: string | undefined;
-    public filePath: string | undefined;
+    public filePathname: string | undefined;
+    public fileHref: string | undefined;
     public userPrivateSpace: string | undefined;
-    public localAttachedBasePath: string | undefined;
-    public localAttachedPath: string;
-    public remoteAttachedBasePath: string | undefined;
-    public remoteAttachedPath: string | undefined;
+    public remoteAttachedBasePath: string;
+    public remoteAttachedFile: string | undefined;
+    public cacheAttachedPath: string;
 
     constructor() {
-        this.localAttachedPath = '';
+        this.cacheAttachedPath      = '';
+        this.remoteAttachedBasePath = '';
+    }
+
+    public async saveCache(remoteAttachedFile: string, pathname: string) {
+        if (remoteAttachedFile && pathname) {
+            this.cacheAttachedPath = path.join(config.CACHE_PATH, `attached/${this.userPrivateSpace}/img`);
+            if (!await utils.getFilePathStat(this.cacheAttachedPath)) {
+                await utils.dirExists(this.cacheAttachedPath);
+            }
+            const imageDist = path.join(this.cacheAttachedPath, pathname);
+            request(remoteAttachedFile).pipe(fs.createWriteStream(imageDist))
+        }
     }
 
     public async adapter(privateProtocolRequest: PrivateProtocolRequest) {
-
-        const defaultImage          = path.join(config.ROOT_PATH, `statics/images/default_image.png`);
-        this.userPrivateSpace       = global.privateSpace;
-        this.localAttachedBasePath  = path.join(config.ROOT_PATH, `attached_files/${this.userPrivateSpace}`);
-        this.remoteAttachedBasePath = `${config.SERVER.ATTACHED_FILES.HOST}:${config.SERVER.ATTACHED_FILES.PORT}/attached_files/${this.userPrivateSpace}`;
 
         this.privateProtocol = {
             headers : privateProtocolRequest.headers,
             method  : privateProtocolRequest.method,
             referrer: privateProtocolRequest.referrer,
-            url     : privateProtocolRequest.url,
+            url     : privateProtocolRequest.url
         };
 
-        const urlObj  = url.parse(this.privateProtocol.url);
-        this.fileType = urlObj.host;
-        this.filePath = urlObj.path;
-
-        this.localAttachedPath = path.join(this.localAttachedBasePath, `${<string>this.fileType}/${this.filePath}`);
+        const urlObj      = url.parse(this.privateProtocol.url);
+        this.fileType     = urlObj.host || '';
+        this.filePathname = urlObj.pathname || '';
+        this.fileHref     = urlObj.href || '';
 
         let newProtocolRequest = {
             url      : '',
             method   : 'GET',
-            sessionId: null
+            sessionId: null,
+            status   : 200
         };
 
-        if (await utils.getFilePathStat(this.localAttachedPath)) {
-            newProtocolRequest.url = this.localAttachedPath;
-        } else {
-            this.remoteAttachedPath = `${<string>this.remoteAttachedBasePath}/img${<string>this.filePath}`;
-            const networkStatus     = await systeminformation.inetChecksite(this.remoteAttachedPath);
+        const defaultImage          = path.join(config.STATICS_PATH, `images/default_image.png`);
+        this.userPrivateSpace       = global.privateSpace;
+        this.remoteAttachedBasePath = `${config.SERVER.ATTACHED_FILES.HOST}:${config.SERVER.ATTACHED_FILES.PORT}/attached_files/${this.userPrivateSpace}`;
+        this.remoteAttachedFile     = `${this.remoteAttachedBasePath}/img${this.filePathname}`;
+        const cacheFileAddress      = path.join(this.cacheAttachedPath, this.filePathname);
+        const time                  = new Date().getTime();
 
+        // 如果有本地有该附件的缓存的话
+        if (await utils.getFilePathStat(cacheFileAddress)) {
+            newProtocolRequest.url = cacheFileAddress;
+            NetworkLogService(this.fileHref, time, {}, true, true)
+        }
+        // 如果本地没有该附件的缓存的话
+        else {
+            const networkStatus = await systeminformation.inetChecksite(this.remoteAttachedFile);
+            console.log(111111, networkStatus, privateProtocolRequest, defaultImage);
             switch (networkStatus.status) {
                 case 200:
-                    newProtocolRequest.url = this.remoteAttachedPath;
+                    // 将远程地址设置为url并返回
+                    newProtocolRequest.url = this.remoteAttachedFile;
+                    // 将远程附件写入至附件缓存
+                    this.saveCache(this.remoteAttachedFile, this.filePathname);
+                    NetworkLogService(this.fileHref, time, {}, true, false);
                     break;
                 case 404:
-                    newProtocolRequest['url'] = `file://${defaultImage}`;
+                    // 如果图片不存在的话，使用默认图
+                    newProtocolRequest.url = `file://${defaultImage}`;
                     break;
             }
         }
-        return newProtocolRequest
+
+        return newProtocolRequest;
 
     }
 

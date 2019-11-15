@@ -6,6 +6,8 @@ cp -rf node_modules ./dist/node_modules
 sleep 1s
 gulp copyHtml
 sleep 1s
+gulp copyStatics
+sleep 1s
 gulp writePkg
 sleep 1s
 npm run package:mac

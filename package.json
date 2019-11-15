@@ -27,6 +27,8 @@
 		"gulp-util": "^3.0.8"
 	},
 	"dependencies": {
+		"@types/request": "^2.48.3",
+		"request": "^2.88.0",
 		"sqlite3": "^4.0.9",
 		"systeminformation": "^4.1.4",
 		"typeorm": "^0.2.16"

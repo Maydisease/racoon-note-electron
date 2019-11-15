@@ -6,7 +6,8 @@ interface BasicConfInterface {
     ICONS: any
     SERVICE_PATH: string
     MODULE_PATH: string
-    NODE_MODULES: string;
+    STATICS_PATH: string;
+    CACHE_PATH: string;
 }
 
 const basicConf: BasicConfInterface | any = {};
@@ -16,6 +17,7 @@ basicConf.ICONS        = icons;
 basicConf.SERVICE_PATH = path.join(basicConf.ROOT_PATH, 'service');
 basicConf.MODULE_PATH  = path.join(basicConf.ROOT_PATH, 'module/');
 basicConf.HTML_PATH    = path.join(basicConf.ROOT_PATH, 'html/');
-basicConf.NODE_MODULES = path.join(basicConf.ROOT_PATH, '../..', 'node_modules/');
+basicConf.STATICS_PATH = path.join(basicConf.ROOT_PATH, 'statics/');
+basicConf.CACHE_PATH   = path.join(basicConf.ROOT_PATH, '..', 'cache');
 
 export default basicConf
