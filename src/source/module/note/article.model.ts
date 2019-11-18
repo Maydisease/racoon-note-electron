@@ -66,9 +66,12 @@ class ArticleModel extends Module {
 
         const setBody: any = {
             cid       : params.cid,
-            updateTime: params.updateTime,
-            lock      : params.lock
+            updateTime: params.updateTime
         };
+
+        if (params.lock === 1 || params.lock === 0) {
+            setBody.lock = params.lock
+        }
 
         if (params.title) {
             setBody.title = params.title;

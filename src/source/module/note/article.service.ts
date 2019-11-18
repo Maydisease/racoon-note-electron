@@ -45,7 +45,7 @@ class articleService {
 
     // 更新文章详情
     public async updateArticle(id: number, params: ArticleUpdateParams) {
-        const time     = new Date().getTime();
+        const time = new Date().getTime();
         const response = await this.articleModel.updateArticle(id, params);
         NetworkLogService('/note/updateArticle', time, {id, ...params}, true, true);
         return response
