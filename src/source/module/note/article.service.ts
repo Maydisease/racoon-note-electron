@@ -45,7 +45,7 @@ class articleService {
 
     // 更新文章详情
     public async updateArticle(id: number, params: ArticleUpdateParams) {
-        const time = new Date().getTime();
+        const time     = new Date().getTime();
         const response = await this.articleModel.updateArticle(id, params);
         NetworkLogService('/note/updateArticle', time, {id, ...params}, true, true);
         return response
@@ -56,6 +56,29 @@ class articleService {
         const time     = new Date().getTime();
         const response = await this.articleModel.addArticle(params);
         NetworkLogService('/note/addArticle', time, params, true, true);
+        return response;
+    }
+
+    public async getUserAllArticleIds(): Promise<number[]> {
+        const ids: number[] = [];
+        const response      = await this.articleModel.getUserAllArticleIds();
+        if (response && response.length > 0) {
+            response.forEach((item: any) => {
+                ids.push(item.id);
+            });
+        }
+
+        return ids;
+    }
+
+    public async addUserAllArticle(data: any[]) {
+        const response = await this.articleModel.addMultipleArticle(data);
+        return response;
+    }
+
+    public async cleanUserArticle() {
+        const response = await this.articleModel.cleanUserArticle();
+        console.log('cleanUserArticle', response);
         return response;
     }
 

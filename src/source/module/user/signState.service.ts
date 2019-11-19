@@ -1,4 +1,5 @@
 import {SignStateModel}    from './signState.model';
+import ArticleService      from '../note/article.service';
 import {NetworkLogService} from "../../service";
 
 declare var global: any;
@@ -6,9 +7,11 @@ declare var global: any;
 class signStateService {
 
     public signStateModel: SignStateModel;
+    public articleService: ArticleService;
 
     constructor() {
         this.signStateModel = new SignStateModel();
+        this.articleService = new ArticleService();
     }
 
     public async getSignState() {
@@ -33,6 +36,8 @@ class signStateService {
         global.isValidToken = true;
         const time          = new Date().getTime();
         const response: any = await this.signStateModel.putSignState(token, private_space);
+        await this.articleService.cleanUserArticle();
+
         NetworkLogService('/user/putSignState', time, {token, privateSpace: private_space}, true, true);
         return response;
     }

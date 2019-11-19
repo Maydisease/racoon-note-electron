@@ -97,6 +97,36 @@ class ArticleModel extends Module {
             .execute();
     }
 
+    public async getUserAllArticleIds() {
+        const connection: Connection = await this.$connection;
+        return await connection.getRepository(articleEntity).find(
+            {
+                select: ['id'],
+                where : [{disable: 0}]
+            }
+        );
+    }
+
+    public async addMultipleArticle(data: any[]) {
+        const connection: Connection = await this.$connection;
+
+        return connection
+            .createQueryBuilder()
+            .insert()
+            .into(articleEntity)
+            .values(data)
+            .execute();
+    }
+
+    public async cleanUserArticle() {
+        const connection: Connection = await this.$connection;
+        return await connection.createQueryBuilder()
+                               .delete()
+                               .from(articleEntity)
+                               .where('id <> :id', {id: 0})
+                               .execute();
+    }
+
 }
 
 export {ArticleModel};
