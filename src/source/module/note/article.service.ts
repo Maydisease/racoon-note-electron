@@ -61,24 +61,28 @@ class articleService {
 
     public async getUserAllArticleIds(): Promise<number[]> {
         const ids: number[] = [];
+        const time          = new Date().getTime();
         const response      = await this.articleModel.getUserAllArticleIds();
         if (response && response.length > 0) {
             response.forEach((item: any) => {
                 ids.push(item.id);
             });
         }
-
+        NetworkLogService('/note/getUserAllArticleIds', time, {}, true, true);
         return ids;
     }
 
     public async addUserAllArticle(data: any[]) {
+        const time     = new Date().getTime();
         const response = await this.articleModel.addMultipleArticle(data);
+        NetworkLogService('/note/addUserAllArticle', time, {}, true, true);
         return response;
     }
 
     public async cleanUserArticle() {
+        const time     = new Date().getTime();
         const response = await this.articleModel.cleanUserArticle();
-        console.log('cleanUserArticle', response);
+        NetworkLogService('/note/cleanUserArticle', time, {}, true, true);
         return response;
     }
 
