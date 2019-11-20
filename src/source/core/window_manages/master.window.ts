@@ -15,6 +15,8 @@ export class MasterWindow {
         title          : 'note',
         width          : 1440,
         height         : 900,
+        minWidth       : 960,
+        minHeight      : 600,
         focusable      : true,
         show           : false,
         autoHideMenuBar: true,
