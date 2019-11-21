@@ -85,6 +85,16 @@ export const topBarMenuTemplateConf: any = [
                     }
                 }
             },
+            {
+                label      : 'Trash Model',
+                accelerator: 'CmdOrCtrl+T',
+                click      : () => {
+                    const masterWin = global.browserWindowList['master'];
+                    if (masterWin.isFocused()) {
+                        masterWin.webContents.send('windowKeyboard', 'CMD_OR_CTRL_T');
+                    }
+                }
+            }
         ]
     },
     {
