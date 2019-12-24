@@ -1,6 +1,6 @@
-import {Module}        from '../module';
-import {articleEntity} from '../../entity/article.entity';
-import {Connection}    from 'typeorm';
+import {Module}           from '../module';
+import {articleEntity}    from '../../entity/article.entity';
+import {Connection, Like} from 'typeorm';
 
 interface ArticleUpdateParams {
     _id?: number,
@@ -125,6 +125,22 @@ class ArticleModel extends Module {
                                .from(articleEntity)
                                .where('id <> :id', {id: 0})
                                .execute();
+    }
+
+    public async searchArticle(keys: string, typeName: string, disable: number, lock: number) {
+        const connection: Connection = await this.$connection;
+
+        const where: any = {
+            disable,
+            lock
+        };
+
+        where[typeName] = Like(`%${keys}%`);
+
+        const order: any = {};
+        order[typeName]  = 'DESC';
+
+        return connection.getRepository(articleEntity).find({where, order});
     }
 
 }

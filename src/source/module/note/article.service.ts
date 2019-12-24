@@ -1,5 +1,6 @@
 import {ArticleModel}      from './article.model';
 import {NetworkLogService} from "../../service";
+import {utils}             from "../../utils";
 
 interface ArticleUpdateParams {
     _id?: number,
@@ -84,6 +85,40 @@ class articleService {
         const response = await this.articleModel.cleanUserArticle();
         NetworkLogService('/note/cleanUserArticle', time, {}, true, true);
         return response;
+    }
+
+    public async searchArticle(params: any) {
+        const time = new Date().getTime();
+        // keys: string, type: string, disable: number, lock: number
+
+        const keys    = params.keys || '';
+        let type      = params.type;
+        let typeName  = type === 0 ? 'title' : 'html_content';
+        const disable = 0;
+        const lock    = 0;
+
+        const searchData = await this.articleModel.searchArticle(keys, typeName, disable, lock);
+
+        searchData.forEach((item: any, index: number) => {
+            const keysLengthMax = 20;
+            let htmlContent     = utils.removeHtmlTag((searchData[index] as any).html_content);
+            const startIndex    = htmlContent.indexOf(params.keys);
+
+            if (startIndex > keysLengthMax) {
+                htmlContent = htmlContent.substring(startIndex - keysLengthMax, startIndex + params.keys.length + keysLengthMax);
+            } else {
+                htmlContent = htmlContent.substring(0, startIndex + params.keys.length + keysLengthMax);
+            }
+
+            const maxLength                            = 50;
+            let des                                    = item.html_content ? utils.removeHtmlTag(item.html_content) : '';
+            des                                        = des.length > maxLength ? des.substring(0, maxLength) + '...' : des;
+            (searchData[index] as any).description     = des;
+            (searchData[index] as any).keysDescription = htmlContent;
+        });
+
+        NetworkLogService('/note/searchArticle', time, {}, true, true);
+        return searchData;
     }
 
 }
