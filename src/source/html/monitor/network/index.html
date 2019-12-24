@@ -30,10 +30,74 @@
             background: RGBA(255, 255, 255, .2);
         }
 
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
         body {
+            width: 100%;
+            height: 100%;
             font-family: Arial, sans-serif;
             font-size: 12px;
             color: #999;
+        }
+
+        #network-monitor {
+            width: 100%;
+            height: 100%;
+            padding-bottom: 25px;
+            box-sizing: border-box;
+        }
+
+        #network-monitor .foot {
+            width: 100%;
+            height: 25px;
+            line-height: 25px;
+            position: absolute;
+            background: RGBA(0, 0, 0, .25);
+            bottom: 0;
+            left: 0;
+            font-size: 12px;
+            padding: 0 10px;
+            border-top: 1px solid RGBA(0, 0, 0, .5);
+            box-sizing: border-box;
+        }
+
+        #network-monitor .head #network-state-time {
+            height: 25px;
+            display: inline-block;
+        }
+
+        #network-monitor .foot #network-state-time .icon {
+            width: 10px;
+            height: 10px;
+            line-height: 11px;
+            display: inline-block;
+            background: #97b757;
+            border-radius: 50%;
+            transition: background .1s;
+        }
+
+        #network-monitor .foot #network-state-time .icon[ping-state=low] {
+            background: #ee9900;
+        }
+
+        #network-monitor .foot #network-state-time .icon[ping-state=slow] {
+            background: #aa2222;
+        }
+
+        #network-monitor .foot #network-state-time .value {
+            color: #ccc;
+            margin-left: 3px;
+        }
+
+        .list {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            display: block;
         }
 
         table {
@@ -68,21 +132,33 @@
     </style>
 </head>
 <body>
-<table id="network-monitor" cellspacing="0" cellpadding="0">
-    <thead>
-    <tr>
-        <th>NO.</th>
-        <th>Path</th>
-        <th>Use Time</th>
-        <th>Type</th>
-        <th>Status</th>
-    </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
+<div id="network-monitor">
+    <div class="list">
+        <table cellspacing="0" cellpadding="0">
+            <thead>
+            <tr>
+                <th>NO.</th>
+                <th>Path</th>
+                <th>Use Time</th>
+                <th>Type</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="foot">
+        <label id="network-state-time">
+            <span class="icon"></span>
+            <span class="value">0ms</span>
+        </label>
+    </div>
+</div>
+</body>
 <script>
 
+	// network log
 	let logIndex       = 0;
 	const generateData = (path, useTime, status, isCache) => {
 
@@ -123,6 +199,46 @@
 		dataContainer.appendChild(dataElement);
 		document.querySelector('html').scrollTop = 999999;
 	});
+
+	// ping widget
+	const netWorkStateTime = document.querySelector('#network-state-time');
+	const valeElement      = netWorkStateTime.querySelector('.value');
+	const iconElement      = netWorkStateTime.querySelector('.icon');
+	ipcRenderer.on('networkPingReply', (event, response) => {
+		if (response < 0) {
+			response = 0;
+		}
+		if (response > 0 && response <= 200) {
+			iconElement.setAttribute('ping-state', 'fast');
+		} else if (response > 200 && response <= 500) {
+			iconElement.setAttribute('ping-state', 'low');
+		} else if (response > 500) {
+			iconElement.setAttribute('ping-state', 'slow');
+		}
+		valeElement.innerText = response + 'ms';
+	});
+
+	let pingTimer;
+	clearImmediate(pingTimer);
+
+	try {
+		const currentWin = electron.remote.getCurrentWindow();
+
+		currentWin.on('show', () => {
+			pingTimer = setInterval(() => {
+				ipcRenderer.send('networkPing');
+			}, 1500);
+		});
+		currentWin.on('hide', () => {
+			clearInterval(pingTimer);
+		});
+
+		currentWin.on('closed', () => {
+			clearInterval(pingTimer);
+		});
+	} catch (e) {
+		clearInterval(pingTimer);
+	}
 </script>
 </body>
 </html>

@@ -8,7 +8,7 @@ import {trayMenuTemplateConf}                                                   
 import path                                                                                      from "path";
 import fs                                                                                        from "fs";
 import * as systeminformation                                                                    from 'systeminformation';
-
+//
 protocol.registerSchemesAsPrivileged([
     {
         scheme    : 'racoon',
@@ -98,7 +98,7 @@ const appReadyInit = async () => {
 
     // 注册私有协议
     // protocol.registerFileProtocol('resource', async (protocolRequest, callback) => {
-    //     callback({path: '/Users/tandongs/Work/my/racoon/electron/src/main.6d62cbbc.js'});
+    //     callback({path: '/racoon/electron/src/main.6d62cbbc.js'});
     // });
 
     SystemBootLog.put('app ready init...');
@@ -106,6 +106,15 @@ const appReadyInit = async () => {
     SystemBootLog.put('create boot monitor window...');
     networkMonitorWindow = await new WindowManages.networkMonitor(true).created();
     SystemBootLog.put('create netWork monitor window...');
+
+    // 监听 networkPing 事件
+    if (networkMonitorWindow) {
+        ipcMain.on('networkPing', async (event) => {
+            const address  = `${config.SERVER.HOST}`;
+            const response = await systeminformation.inetChecksite(address);
+            event.reply('networkPingReply', response.ms);
+        });
+    }
 
     // 获取当前网络状态
     const networkStatus = await systeminformation.inetChecksite(`${config.SERVER.HOST}:${config.SERVER.PORT}`);

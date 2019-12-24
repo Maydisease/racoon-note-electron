@@ -5,6 +5,7 @@ const del                        = require('del');
 const fs                         = require('fs');
 const package                    = require('./package.json');
 const gutil                      = require('gulp-util');
+const watch                      = require('gulp-watch');
 const electron_src_path          = path.join(__dirname);
 const electron_dist_path         = path.join(electron_src_path, 'dist');
 const electron_build_path        = path.join(electron_src_path, 'build');
@@ -57,6 +58,10 @@ gulp.task('copyElectronStatics', done => {
 	done();
 });
 
+gulp.task('watchElectronHtml', () => {
+	watch(path.join(electron_html_path, '/**/*'), gulp.parallel('copyHtml', 'copyStatics'));
+});
+
 gulp.task('writeElectronRunPack', done => {
 	const content = {
 		main: 'electron-start.js',
@@ -73,6 +78,7 @@ gulp.task('writeElectronRunPack', done => {
 
 gulp.task('clear', gulp.parallel('clearElectronBuildDir', 'clearElectronDistDir'));
 gulp.task('copyNodeModules', gulp.parallel('copyElectronNodeModules'));
-gulp.task('copyHtml', gulp.parallel('copyElectronHtml'));
+gulp.task('watchHtml', gulp.parallel('watchElectronHtml'));
 gulp.task('copyStatics', gulp.parallel('copyElectronStatics'));
 gulp.task('writePkg', gulp.parallel('writeElectronRunPack'));
+gulp.task('copyHtml', gulp.parallel('copyElectronHtml'));

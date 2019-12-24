@@ -10,7 +10,7 @@
 		"package:mac": "electron-packager ./dist --overwrite --platform=darwin --arch=x64 --out=./build --icon=assets/app-icon/mac/app.icns --osx-sign.identity='meidvh' --extend-info=assets/mac/info.plist --darwinDarkModeSupport=true",
 		"build:win": "gulp clear && tsc && gulp writePkg && gulp copyHtml && gulp copyStatics && gulp copyNodeModules && npm run package:win",
 		"build:mac": "bash ./build.mac.sh",
-		"watch": "concurrently \"tsc -w\" \"gulp copyHtml\" \"gulp copyStatics\""
+		"watch": "concurrently \"tsc -w\" \"gulp watchHtml\" \"gulp copyHtml\" \"gulp copyStatics\""
 	},
 	"author": "",
 	"license": "ISC",
@@ -28,6 +28,8 @@
 		"memory-fs": "^0.5.0"
 	},
 	"dependencies": {
+		"@types/request": "^2.48.4",
+		"gulp-watch": "^5.0.1",
 		"request": "^2.88.0",
 		"sqlite3": "^4.0.9",
 		"systeminformation": "^4.1.4",
