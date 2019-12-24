@@ -8,7 +8,7 @@ import {trayMenuTemplateConf}                                                   
 import path                                                                                      from "path";
 import fs                                                                                        from "fs";
 import * as systeminformation                                                                    from 'systeminformation';
-//
+
 protocol.registerSchemesAsPrivileged([
     {
         scheme    : 'racoon',

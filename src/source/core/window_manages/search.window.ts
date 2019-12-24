@@ -1,6 +1,6 @@
-import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import {BrowserWindow}        from 'electron';
-import {config}               from "../../config";
+import {ChromeExtensionsLoad}                           from "../../chrome_extensions";
+import {BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
+import {config}                                         from "../../config";
 
 declare var global: any;
 
@@ -11,7 +11,7 @@ export class SearchWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'Search',
         minimizable    : false,
         maximizable    : false,
@@ -35,7 +35,7 @@ export class SearchWindow {
         }
     };
 
-    constructor(OnDevTools: boolean, Option: any = {}) {
+    constructor(OnDevTools: boolean, Option: BrowserWindowConstructorOptions = {}) {
         const time       = new Date().getTime();
         this.winHash     = 'search';
         this.win         = null;

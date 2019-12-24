@@ -13,23 +13,6 @@
             padding: 0;
         }
 
-        /* 设置滚动条的样式 */
-        ::-webkit-scrollbar {
-            width: 3px;
-            height: 5px;
-        }
-
-        /* 滚动槽 */
-        ::-webkit-scrollbar-track {
-
-        }
-
-        /* 滚动条滑块 */
-        ::-webkit-scrollbar-thumb {
-            border-radius: 5px;
-            background: RGBA(255, 255, 255, .2);
-        }
-
         html {
             width: 100%;
             height: 100%;
@@ -92,12 +75,31 @@
             margin-left: 3px;
         }
 
-        .list {
+        #network-monitor .list {
             width: 100%;
             height: 100%;
             overflow-x: hidden;
             overflow-y: scroll;
             display: block;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 设置滚动条的样式 */
+        #network-monitor .list::-webkit-scrollbar {
+            width: 3px;
+            height: 5px;
+        }
+
+        /* 滚动槽 */
+        #network-monitor .list::-webkit-scrollbar-track {
+
+        }
+
+        /* 滚动条滑块 */
+        #network-monitor .list::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background: RGBA(255, 255, 255, .2);
         }
 
         table {
@@ -186,6 +188,7 @@
 	};
 
 	const networkMonitorElement = document.getElementById('network-monitor');
+	const listElement           = networkMonitorElement.querySelector('.list');
 	const dataContainer         = networkMonitorElement.querySelector('tbody');
 	ipcRenderer.on('httpLogs', (event, response) => {
 		const dataCount = dataContainer.querySelectorAll('tr').length;
@@ -197,7 +200,7 @@
 		const useTime                                     = endTime - startTime;
 		const dataElement                                 = generateData(path, useTime, status, isCache);
 		dataContainer.appendChild(dataElement);
-		document.querySelector('html').scrollTop = 999999;
+		listElement.scrollTop = 999999;
 	});
 
 	// ping widget

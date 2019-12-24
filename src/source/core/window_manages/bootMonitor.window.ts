@@ -1,5 +1,5 @@
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import {BrowserWindow}        from 'electron';
+import {BrowserWindow, BrowserWindowConstructorOptions}        from 'electron';
 import {config}               from "../../config";
 import path                   from "path";
 
@@ -11,7 +11,7 @@ export class BootMonitorWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'boot monitor',
         minimizable    : false,
         maximizable    : false,
@@ -36,7 +36,7 @@ export class BootMonitorWindow {
         }
     };
 
-    constructor(OnDevTools: boolean, Option: any = {}) {
+    constructor(OnDevTools: boolean, Option: BrowserWindowConstructorOptions = {}) {
         this.winHash    = 'bootMonitor';
         this.win        = null;
         this.option     = {...this.option, ...Option};

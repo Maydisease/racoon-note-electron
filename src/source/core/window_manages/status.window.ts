@@ -1,4 +1,4 @@
-import {app, BrowserWindow}   from 'electron';
+import {app, BrowserWindow, BrowserWindowConstructorOptions}   from 'electron';
 import {config}               from "../../config";
 import path                   from "path";
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
@@ -12,7 +12,7 @@ export class StatusWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option: any = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'status',
         width          : 400,
         height         : 230,
@@ -35,7 +35,7 @@ export class StatusWindow {
         }
     };
 
-    constructor(routePath: string | null = null, OnDevTools: boolean, Option: any = {}) {
+    constructor(routePath: string | null = null, OnDevTools: boolean, Option: BrowserWindowConstructorOptions = {}) {
         const time       = new Date().getTime();
         this.winHash     = 'status';
         this.win         = null;

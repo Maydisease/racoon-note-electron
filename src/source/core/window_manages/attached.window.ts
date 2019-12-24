@@ -1,6 +1,6 @@
-import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import {BrowserWindow}        from 'electron';
-import {config}               from "../../config";
+import {ChromeExtensionsLoad}                           from "../../chrome_extensions";
+import {BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
+import {config}                                         from "../../config";
 
 declare var global: any;
 
@@ -11,7 +11,7 @@ export class AttachedWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'Attached',
         minimizable    : false,
         maximizable    : false,
@@ -22,7 +22,7 @@ export class AttachedWindow {
         fullscreenable : false,
         resizable      : config.ENV === 'development',
         autoHideMenuBar: true,
-        parent         : (global.browserWindowList as any)['master'],
+        parent         : global.browserWindowList['master'],
         backgroundColor: '#1E2022',
         webPreferences : {
             nodeIntegration        : true,

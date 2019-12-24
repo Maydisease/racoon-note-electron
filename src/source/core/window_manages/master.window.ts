@@ -1,6 +1,6 @@
-import {app, BrowserWindow}   from 'electron';
-import {config}               from "../../config";
-import {ChromeExtensionsLoad} from "../../chrome_extensions";
+import {app, BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
+import {config}                                              from "../../config";
+import {ChromeExtensionsLoad}                                from "../../chrome_extensions";
 
 declare var global: any;
 
@@ -11,7 +11,7 @@ export class MasterWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'note',
         width          : 1440,
         height         : 900,
@@ -29,7 +29,7 @@ export class MasterWindow {
         }
     };
 
-    constructor(routePath: string | null = null, OnDevTools: boolean, Option: any = {}) {
+    constructor(routePath: string | null = null, OnDevTools: boolean, Option: BrowserWindowConstructorOptions = {}) {
         const time       = new Date().getTime();
         this.winHash     = 'master';
         this.win         = null;

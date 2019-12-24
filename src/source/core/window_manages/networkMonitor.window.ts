@@ -1,7 +1,7 @@
-import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import {BrowserWindow}        from 'electron';
-import {config}               from "../../config";
-import path                   from "path";
+import {ChromeExtensionsLoad}                           from "../../chrome_extensions";
+import {BrowserWindow, BrowserWindowConstructorOptions} from 'electron';
+import {config}                                         from "../../config";
+import path                                             from "path";
 
 declare var global: any;
 
@@ -11,7 +11,7 @@ export class NetworkMonitorWindow {
     public onDevTools: boolean;
     public winHash: string;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'network monitor',
         minimizable    : false,
         maximizable    : false,
@@ -36,7 +36,7 @@ export class NetworkMonitorWindow {
         }
     };
 
-    constructor(OnDevTools: boolean, Option: any = {}) {
+    constructor(OnDevTools: boolean, Option: BrowserWindowConstructorOptions = {}) {
         this.winHash    = 'networkMonitor';
         this.win        = null;
         this.option     = {...this.option, ...Option};

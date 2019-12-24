@@ -1,6 +1,6 @@
 declare var global: any;
 import {ChromeExtensionsLoad} from "../../chrome_extensions";
-import {BrowserWindow}        from 'electron';
+import {BrowserWindow, BrowserWindowConstructorOptions}        from 'electron';
 import {config}               from "../../config";
 
 export class SignWindow {
@@ -11,7 +11,7 @@ export class SignWindow {
     public winHash: string;
     public parentWin: BrowserWindow;
 
-    public option = {
+    public option: BrowserWindowConstructorOptions = {
         title          : 'SignIn&SignUp',
         minimizable    : false,
         maximizable    : false,
@@ -33,7 +33,7 @@ export class SignWindow {
         }
     };
 
-    constructor(OnDevTools: boolean, parentWin: BrowserWindow, Option: any = {}) {
+    constructor(OnDevTools: boolean, parentWin: BrowserWindow, Option: BrowserWindowConstructorOptions = {}) {
         const time       = new Date().getTime();
         this.winHash     = 'sign';
         this.win         = null;
