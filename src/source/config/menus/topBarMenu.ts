@@ -39,6 +39,7 @@ export const topBarMenuTemplateConf: any = [
                     }
                 }
             },
+            {role: 'selectAll'}
         ]
     },
     {
