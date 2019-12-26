@@ -93,7 +93,7 @@ class articleService {
 
         const keys    = params.keys || '';
         let type      = params.type;
-        let typeName  = type === 0 ? 'title' : 'html_content';
+        let typeName  = type === 0 ? 'title' : 'markdown_content';
         const disable = 0;
         const lock    = 0;
 

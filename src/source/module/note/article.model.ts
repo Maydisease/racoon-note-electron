@@ -139,7 +139,6 @@ class ArticleModel extends Module {
 
         const order: any = {};
         order[typeName]  = 'DESC';
-
         return connection.getRepository(articleEntity).find({where, order});
     }
 
