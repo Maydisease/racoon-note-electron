@@ -9,6 +9,8 @@ import path                                                                     
 import fs                                                                                        from "fs";
 import * as systeminformation                                                                    from 'systeminformation';
 
+console.log(process.versions);
+
 protocol.registerSchemesAsPrivileged([
     {
         scheme    : 'racoon',
@@ -65,6 +67,7 @@ let masterWindow: BrowserWindow | null;
 let signWindow: BrowserWindow | null;
 let statusWindow: BrowserWindow | null;
 let networkMonitorWindow: BrowserWindow | null;
+let UserOptionsWindow: BrowserWindow | null;
 let bootMonitorWindow: BrowserWindow | null;
 let topBarMenu: Menu;
 let tray: Tray;

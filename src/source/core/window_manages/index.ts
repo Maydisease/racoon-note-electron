@@ -5,6 +5,7 @@ import {AttachedWindow}       from './attached.window';
 import {StatusWindow}         from './status.window';
 import {NetworkMonitorWindow} from './networkMonitor.window';
 import {BootMonitorWindow}    from './bootMonitor.window';
+import {UserOptionsWindow}    from './UserOptions.window';
 
 const WindowManages = {
     master        : MasterWindow,
@@ -13,7 +14,8 @@ const WindowManages = {
     attached      : AttachedWindow,
     status        : StatusWindow,
     networkMonitor: NetworkMonitorWindow,
-    bootMonitor   : BootMonitorWindow
+    bootMonitor   : BootMonitorWindow,
+    userOptions   : UserOptionsWindow
 };
 
 export {WindowManages}
