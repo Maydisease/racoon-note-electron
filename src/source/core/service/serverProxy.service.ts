@@ -25,13 +25,17 @@ export class ServerProxy {
         const url       = `${this.remoteAddress}${path}`;
         const startTime = new Date().getTime();
 
+        console.log(url);
+
         return await new Http(url, this.params)
             .POST()
             .then((response: any) => {
+                console.log(response);
                 NetworkLogService(path, startTime, this.params, true);
                 return response;
             })
             .catch((err: Error) => {
+                console.log(err);
                 NetworkLogService(path, startTime, this.params, false);
                 return {result: 1, err}
             })
