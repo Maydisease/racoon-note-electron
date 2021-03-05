@@ -74,7 +74,10 @@ export class Http {
                 options.headers['Auth-Token'] = this.authToken;
             }
 
+
             options.headers = Object.assign(options.headers, this.headers);
+
+            console.log('request:', options);
 
             const req = http.request(options, (res) => {
                 res.setEncoding('utf8');
