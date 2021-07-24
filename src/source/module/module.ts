@@ -1,24 +1,25 @@
-import {Connection, createConnection} from "typeorm";
-import {config}                       from "../config";
-import {SignStateEntity}              from '../entity/signState.entity';
-import {articleEntity}                from '../entity/article.entity';
+import {Connection, createConnection} from 'typeorm';
+import {config} from '../config';
+import {SignStateEntity} from '../entity/signState.entity';
+import {articleEntity} from '../entity/article.entity';
+import {linkTagEntity} from '../entity/linkTag.entity'
 
 const connection: any = createConnection({
-    type       : "sqlite",
-    name       : 'main',
-    database   : config.DB.PATH,
-    entities   : [SignStateEntity, articleEntity],
-    synchronize: true,
-    logging    : config.ENV === 'development'
+	type: 'sqlite',
+	name: 'main',
+	database: config.DB.PATH,
+	entities: [SignStateEntity, articleEntity, linkTagEntity],
+	synchronize: true,
+	logging: config.ENV === 'development'
 });
 
 class Module {
 
-    public $connection: Connection;
+	public $connection: Connection;
 
-    constructor() {
-        this.$connection = connection;
-    }
+	constructor() {
+		this.$connection = connection;
+	}
 
 }
 

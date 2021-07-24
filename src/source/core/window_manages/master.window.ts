@@ -61,6 +61,14 @@ export class MasterWindow {
                 }
             });
 
+            this.win.on('blur', () => {
+                this.win && this.win.webContents.send('window-blur');
+            });
+
+            this.win.on('focus', () => {
+                this.win && this.win.webContents.send('window-focus');
+            });
+
         });
     }
 

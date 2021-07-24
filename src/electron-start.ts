@@ -235,14 +235,17 @@ global.service = {
       masterWin.webContents.send(`${emitAuthor}@${newEventName}`, params);
     }
   },
+
   DestroyTargetWin: (winHash: string) => {
     (global.browserWindowList[winHash] as BrowserWindow).destroy();
     delete global.browserWindowList[winHash];
   },
+
   AppReset: () => {
     app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) });
     app.exit(0);
   },
+
   SignOut: async () => {
     const validToken = await ClientCache('/user/signState').removeSignState();
     if (typeof validToken.raw === 'object' && validToken.raw.length === 0) {
