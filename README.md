@@ -1,11 +1,11 @@
-# Racoon
+# Racoon (浣熊)
 
-Racoon is a desktop application built using Electron and TypeScript.
+Racoon (浣熊) 是一款使用 Electron 和 TypeScript 构建的桌面应用程序。
 
-## Features
+## 功能特性
 
-*   **Note-taking:** Allows users to create and manage notes.
-*   **Bookmarking:** Enables users to save and organize bookmarks.
-*   **Local Data Storage:** Uses SQLite to store data locally on the user's machine.
+*   **笔记:** 允许用户创建和管理笔记。
+*   **书签:** 用户可以保存和整理书签。
+*   **本地数据存储:** 使用 SQLite 将数据存储在用户本地计算机上。
 
-This project is currently under development.
+该项目目前正在开发中。

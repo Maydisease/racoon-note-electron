@@ -1,7 +1,7 @@
 {
 	"name": "Racoon",
 	"version": "1.0.0",
-	"description": "Racoon is a desktop application for note-taking and bookmarking, built with Electron and TypeScript.",
+	"description": "Racoon (浣熊) 是一款使用 Electron 和 TypeScript 构建的桌面应用程序，提供笔记和书签功能。",
 	"main": "./dist/electron-start.js",
 	"scripts": {
 		"start:dev": "cross-env NODE_ENV=development electron .",
